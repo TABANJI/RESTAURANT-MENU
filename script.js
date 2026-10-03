@@ -59,9 +59,9 @@ const menuItems = [
   { id: 'drinks-pepsi-diet', name: 'Pepsi Diet', category: 'drinks', price: 100000, priceLabel: '100,000 LL', description: '', image: "./images/zatar.png/Холодний Pepsi Zero Sugar на льоду.png", options: [], popular: false, filters: [] },
   { id: 'drinks-7up', name: '7UP', category: 'drinks', price: 100000, priceLabel: '100,000 LL', description: '', image: "./images/zatar.png/Освіжаючий 7UP з льодом на дерев’яному столі.png", options: [], popular: false, filters: [] },
   { id: 'drinks-mirinda', name: 'Mirinda', category: 'drinks', price: 100000, priceLabel: '100,000 LL', description: '', image: "./images/zatar.png/Крижана Mirinda Orange на дереві.png", options: [], popular: false, filters: [] },
-  { id: 'gift-card-10', name: 'Nicolas.S Gift Card — $10', category: 'gift-certificates', price: 10, priceLabel: '$10', description: "Gift card value is denominated in USD. LBP equivalent is calculated at the restaurant's current exchange rate on the date of redemption. Not redeemable for cash.", image: "./images/zatar.png/Розкішна чорна подарункова картка ресторану.png", options: [], popular: false, filters: [] },
-  { id: 'gift-card-20', name: 'Nicolas.S Gift Card — $20', category: 'gift-certificates', price: 20, priceLabel: '$20', description: "Gift card value is denominated in USD. LBP equivalent is calculated at the restaurant's current exchange rate on the date of redemption. Not redeemable for cash.", image: "./images/zatar.png/Розкішна чорна подарункова картка Nicolas.S.png", options: [], popular: false, filters: [] },
-  { id: 'gift-card-30', name: 'Nicolas.S Gift Card — $30', category: 'gift-certificates', price: 30, priceLabel: '$30', description: "Gift card value is denominated in USD. LBP equivalent is calculated at the restaurant's current exchange rate on the date of redemption. Not redeemable for cash.", image: "./images/zatar.png/Елегантна подарункова картка ресторану Nicolas.S (1).png", options: [], popular: false, filters: [] }
+  { id: 'gift-card-10', name: 'Nicolas.S Gift Card', category: 'gift-certificates', price: 10, priceLabel: '$10', description: "A special gift for someone special.", image: "./images/zatar.png/Розкішна чорна подарункова картка ресторану.png", options: [], popular: false, filters: [] },
+  { id: 'gift-card-20', name: 'Nicolas.S Gift Card', category: 'gift-certificates', price: 20, priceLabel: '$20', description: "A special gift for someone special.", image: "./images/zatar.png/Розкішна чорна подарункова картка Nicolas.S.png", options: [], popular: false, filters: [] },
+  { id: 'gift-card-30', name: 'Nicolas.S Gift Card', category: 'gift-certificates', price: 30, priceLabel: '$30', description: "A special gift for someone special.", image: "./images/zatar.png/Елегантна подарункова картка ресторану Nicolas.S (1).png", options: [], popular: false, filters: [] }
 ];
 
 const productGrid = document.querySelector('.product-grid');
@@ -127,12 +127,14 @@ const escapeHtml = (value) => String(value).replaceAll('&', '&amp;').replaceAll(
 const favoriteIcon = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78L12 21.23l8.84-8.84a5.5 5.5 0 0 0 0-7.78Z"/></svg>';
 const shareIcon = '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="m8.59 10.51 6.83-3.98M8.59 13.49l6.83 3.98"/></svg>';
 
+const giftCardTerms = `<aside class="gift-card-terms"><h3>GIFT CARD TERMS</h3><p>Gift cards are denominated in USD. LBP equivalent is calculated at the restaurant's current exchange rate on the date of redemption. Gift cards are not redeemable for cash.</p></aside>`;
+
 const productCardTemplate = (item) => {
   const isFavorite = favorites.has(item.id);
   const description = item.description ? `<p>${escapeHtml(item.description)}</p>` : '';
   const badge = item.popular ? '<mark>Popular</mark>' : '';
   const options = item.options.length ? `<button class="options-button" type="button" aria-label="Show options for ${escapeHtml(item.name)}"><span aria-hidden="true">↓</span> Show options</button>` : '';
-  return `<article class="product-card reveal is-visible" data-product-id="${escapeHtml(item.id)}">
+  return `<article class="product-card reveal is-visible${item.category === 'gift-certificates' ? ' gift-card' : ''}" data-product-id="${escapeHtml(item.id)}">
     <div class="product-media"><div class="product-image image-placeholder">${item.image ? `<img src="${escapeHtml(encodeURI(item.image))}" alt="${escapeHtml(item.name)}" loading="lazy" decoding="async">` : '<span>PRODUCT PHOTO</span>'}${badge}</div><button type="button" class="add-button mobile-add-button">+ ADD</button></div>
     <div class="product-body"><h3>${escapeHtml(item.name)}</h3>${description}<div class="product-options">${options}<div class="product-quick-actions"><button class="favorite-button${isFavorite ? ' is-active' : ''}" type="button" aria-label="${isFavorite ? 'Remove' : 'Add'} ${escapeHtml(item.name)} ${isFavorite ? 'from' : 'to'} favorites" aria-pressed="${isFavorite}">${favoriteIcon}</button><button class="share-button" type="button" aria-label="Share ${escapeHtml(item.name)}">${shareIcon}</button></div></div><div class="product-footer"><strong>${escapeHtml(item.priceLabel)}</strong><button type="button" class="add-button">Add to order <span>+</span></button></div></div>
   </article>`;
@@ -143,9 +145,9 @@ const desktopProductCardTemplate = (item) => {
   const description = item.description ? `<p>${escapeHtml(item.description)}</p>` : '';
   const badge = item.popular ? '<mark>Popular</mark>' : '';
   const options = item.options.length ? `<button class="options-button" type="button"><span aria-hidden="true">↓</span> Show options</button>` : '';
-  return `<article class="desktop-product-card product-card" data-product-id="${escapeHtml(item.id)}">
+  return `<article class="desktop-product-card product-card${item.category === 'gift-certificates' ? ' gift-card' : ''}" data-product-id="${escapeHtml(item.id)}">
     <div class="desktop-product-image-wrap"><div class="product-image image-placeholder">${item.image ? `<img src="${escapeHtml(encodeURI(item.image))}" alt="${escapeHtml(item.name)}" loading="lazy" decoding="async">` : '<span>PRODUCT PHOTO</span>'}${badge}</div><button class="favorite-button${isFavorite ? ' is-active' : ''}" type="button" aria-label="${isFavorite ? 'Remove' : 'Add'} ${escapeHtml(item.name)} ${isFavorite ? 'from' : 'to'} favorites" aria-pressed="${isFavorite}">${favoriteIcon}</button></div>
-    <div class="desktop-product-body"><h3>${escapeHtml(item.name)}</h3>${description}<div class="desktop-product-controls">${options}<button class="share-button" type="button" aria-label="Share ${escapeHtml(item.name)}">${shareIcon}</button></div></div>
+    <div class="desktop-product-body"><h3>${escapeHtml(item.name)}</h3>${item.category === 'gift-certificates' ? `<strong class="gift-card-value">${escapeHtml(item.priceLabel)}</strong>` : ''}${description}<div class="desktop-product-controls">${options}<button class="share-button" type="button" aria-label="Share ${escapeHtml(item.name)}">${shareIcon}</button></div></div>
     <div class="desktop-product-footer"><strong class="desktop-product-price">${escapeHtml(item.priceLabel)}</strong><button type="button" class="add-button">+ ADD</button></div>
   </article>`;
 };
@@ -267,7 +269,7 @@ const renderProducts = () => {
   const remainingSections = `
     <section class="product-group" id="burger-sandwich" data-main-section="sandwiches-burgers"><div class="mobile-menu-heading"><span>Nicolas.S</span><h2>BURGER / SANDWICH</h2></div>${burgerItems.map(productCardTemplate).join('')}</section>
     <section class="product-group" id="drinks-menu" data-main-section="drinks"><div class="mobile-menu-heading"><span>Nicolas.S</span><h2>DRINKS</h2></div>${itemsForCategory('drinks').map(productCardTemplate).join('')}</section>
-    <section class="product-group" id="gift-certificates-menu" data-main-section="gift-certificates"><div class="mobile-menu-heading"><span>Nicolas.S</span><h2>GIFT CERTIFICATES</h2></div>${itemsForCategory('gift-certificates').map(productCardTemplate).join('')}</section>`;
+    <section class="product-group" id="gift-certificates-menu" data-main-section="gift-certificates"><div class="mobile-menu-heading"><span>Nicolas.S</span><h2>GIFT CERTIFICATES</h2></div>${itemsForCategory('gift-certificates').map(productCardTemplate).join('')}${giftCardTerms}</section>`;
 
   productGrid.innerHTML = miniBitesSections + remainingSections;
   startScrollSpy();
@@ -357,7 +359,7 @@ const renderDesktopProducts = () => {
   desktopProductGrid.innerHTML = desktopSections.map((section) => {
     const items = desktopItemsForSection(section);
     const content = items.length ? items.map(desktopProductCardTemplate).join('') : `<p class="desktop-empty-section">${section.category ? 'No matching items.' : 'No verified menu items are available for this section yet.'}</p>`;
-    return `<section class="desktop-menu-section" id="${section.id}" data-desktop-main="${section.main}"><header class="desktop-section-heading"><span>Nicolas.S</span><h2>${section.title}</h2></header>${content}</section>`;
+    return `<section class="desktop-menu-section" id="${section.id}" data-desktop-main="${section.main}"><header class="desktop-section-heading"><span>Nicolas.S</span><h2>${section.title}</h2></header>${content}${section.category === 'gift-certificates' ? giftCardTerms : ''}</section>`;
   }).join('');
   startDesktopScrollSpy();
 };
