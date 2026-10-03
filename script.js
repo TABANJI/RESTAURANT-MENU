@@ -58,7 +58,10 @@ const menuItems = [
   { id: 'drinks-pepsi', name: 'Pepsi', category: 'drinks', price: 100000, priceLabel: '100,000 LL', description: '', image: "./images/zatar.png/Холодна Pepsi з льодом на дерев’яному столі.png", options: [], popular: false, filters: [] },
   { id: 'drinks-pepsi-diet', name: 'Pepsi Diet', category: 'drinks', price: 100000, priceLabel: '100,000 LL', description: '', image: "./images/zatar.png/Холодний Pepsi Zero Sugar на льоду.png", options: [], popular: false, filters: [] },
   { id: 'drinks-7up', name: '7UP', category: 'drinks', price: 100000, priceLabel: '100,000 LL', description: '', image: "./images/zatar.png/Освіжаючий 7UP з льодом на дерев’яному столі.png", options: [], popular: false, filters: [] },
-  { id: 'drinks-mirinda', name: 'Mirinda', category: 'drinks', price: 100000, priceLabel: '100,000 LL', description: '', image: "./images/zatar.png/Крижана Mirinda Orange на дереві.png", options: [], popular: false, filters: [] }
+  { id: 'drinks-mirinda', name: 'Mirinda', category: 'drinks', price: 100000, priceLabel: '100,000 LL', description: '', image: "./images/zatar.png/Крижана Mirinda Orange на дереві.png", options: [], popular: false, filters: [] },
+  { id: 'gift-card-10', name: 'Nicolas.S Gift Card — $10', category: 'gift-certificates', price: 10, priceLabel: '$10', description: "Gift card value is denominated in USD. LBP equivalent is calculated at the restaurant's current exchange rate on the date of redemption. Not redeemable for cash.", image: "./images/zatar.png/Розкішна чорна подарункова картка ресторану.png", options: [], popular: false, filters: [] },
+  { id: 'gift-card-20', name: 'Nicolas.S Gift Card — $20', category: 'gift-certificates', price: 20, priceLabel: '$20', description: "Gift card value is denominated in USD. LBP equivalent is calculated at the restaurant's current exchange rate on the date of redemption. Not redeemable for cash.", image: "./images/zatar.png/Розкішна чорна подарункова картка Nicolas.S.png", options: [], popular: false, filters: [] },
+  { id: 'gift-card-30', name: 'Nicolas.S Gift Card — $30', category: 'gift-certificates', price: 30, priceLabel: '$30', description: "Gift card value is denominated in USD. LBP equivalent is calculated at the restaurant's current exchange rate on the date of redemption. Not redeemable for cash.", image: "./images/zatar.png/Елегантна подарункова картка ресторану Nicolas.S (1).png", options: [], popular: false, filters: [] }
 ];
 
 const productGrid = document.querySelector('.product-grid');
@@ -264,7 +267,7 @@ const renderProducts = () => {
   const remainingSections = `
     <section class="product-group" id="burger-sandwich" data-main-section="sandwiches-burgers"><div class="mobile-menu-heading"><span>Nicolas.S</span><h2>BURGER / SANDWICH</h2></div>${burgerItems.map(productCardTemplate).join('')}</section>
     <section class="product-group" id="drinks-menu" data-main-section="drinks"><div class="mobile-menu-heading"><span>Nicolas.S</span><h2>DRINKS</h2></div>${itemsForCategory('drinks').map(productCardTemplate).join('')}</section>
-    <section class="product-group" id="gift-certificates-menu" data-main-section="gift-certificates"><div class="mobile-menu-heading"><span>Nicolas.S</span><h2>GIFT CERTIFICATES</h2></div><p class="menu-empty">No items in this section yet.</p></section>`;
+    <section class="product-group" id="gift-certificates-menu" data-main-section="gift-certificates"><div class="mobile-menu-heading"><span>Nicolas.S</span><h2>GIFT CERTIFICATES</h2></div>${itemsForCategory('gift-certificates').map(productCardTemplate).join('')}</section>`;
 
   productGrid.innerHTML = miniBitesSections + remainingSections;
   startScrollSpy();
@@ -281,7 +284,7 @@ const desktopSections = [
   { id: 'desktop-desserts', title: 'DESSERTS', category: 'desserts', main: 'mini-bites' },
   { id: 'desktop-burger-sandwich', title: 'SANDWICHES & BURGERS', category: 'burger-sandwich', main: 'sandwiches-burgers' },
   { id: 'desktop-drinks', title: 'DRINKS', category: 'drinks', main: 'drinks' },
-  { id: 'desktop-gift-certificates', title: 'GIFT CERTIFICATES', category: null, main: 'gift-certificates' }
+  { id: 'desktop-gift-certificates', title: 'GIFT CERTIFICATES', category: 'gift-certificates', main: 'gift-certificates' }
 ];
 
 const desktopItemsForSection = (section) => {
