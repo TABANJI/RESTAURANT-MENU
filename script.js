@@ -252,15 +252,15 @@ const renderProducts = () => {
 
   const miniBitesSections = mobileMenuSections.map((section, index) => {
     const sectionItems = itemsForCategory(section.id);
-    const heading = index === 0 ? '' : `<div class="mobile-menu-heading"><span>MINI BITES</span><h2>${section.label}</h2></div>`;
+    const heading = index === 0 ? '' : `<div class="mobile-menu-heading"><span>Nicolas.S</span><h2>${section.label}</h2></div>`;
     return `<section class="product-group" id="${section.id}" data-main-section="mini-bites" data-filter="${section.id}">${heading}${sectionItems.map(productCardTemplate).join('')}</section>`;
   }).join('');
 
   const burgerItems = itemsForCategory('burger-sandwich');
   const remainingSections = `
-    <section class="product-group" id="burger-sandwich" data-main-section="sandwiches-burgers"><div class="mobile-menu-heading"><span>MINI BITES</span><h2>BURGER / SANDWICH</h2></div>${burgerItems.map(productCardTemplate).join('')}</section>
-    <section class="product-group" id="drinks-menu" data-main-section="drinks"><div class="mobile-menu-heading"><span>MINI BITES</span><h2>DRINKS</h2></div><p class="menu-empty">No items in this section yet.</p></section>
-    <section class="product-group" id="gift-certificates-menu" data-main-section="gift-certificates"><div class="mobile-menu-heading"><span>MINI BITES</span><h2>GIFT CERTIFICATES</h2></div><p class="menu-empty">No items in this section yet.</p></section>`;
+    <section class="product-group" id="burger-sandwich" data-main-section="sandwiches-burgers"><div class="mobile-menu-heading"><span>Nicolas.S</span><h2>BURGER / SANDWICH</h2></div>${burgerItems.map(productCardTemplate).join('')}</section>
+    <section class="product-group" id="drinks-menu" data-main-section="drinks"><div class="mobile-menu-heading"><span>Nicolas.S</span><h2>DRINKS</h2></div><p class="menu-empty">No items in this section yet.</p></section>
+    <section class="product-group" id="gift-certificates-menu" data-main-section="gift-certificates"><div class="mobile-menu-heading"><span>Nicolas.S</span><h2>GIFT CERTIFICATES</h2></div><p class="menu-empty">No items in this section yet.</p></section>`;
 
   productGrid.innerHTML = miniBitesSections + remainingSections;
   startScrollSpy();
@@ -350,7 +350,7 @@ const renderDesktopProducts = () => {
   desktopProductGrid.innerHTML = desktopSections.map((section) => {
     const items = desktopItemsForSection(section);
     const content = items.length ? items.map(desktopProductCardTemplate).join('') : `<p class="desktop-empty-section">${section.category ? 'No matching items.' : 'No verified menu items are available for this section yet.'}</p>`;
-    return `<section class="desktop-menu-section" id="${section.id}" data-desktop-main="${section.main}"><header class="desktop-section-heading"><span>MINI BITES</span><h2>${section.title}</h2></header>${content}</section>`;
+    return `<section class="desktop-menu-section" id="${section.id}" data-desktop-main="${section.main}"><header class="desktop-section-heading"><span>Nicolas.S</span><h2>${section.title}</h2></header>${content}</section>`;
   }).join('');
   startDesktopScrollSpy();
 };
