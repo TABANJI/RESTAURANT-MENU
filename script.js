@@ -54,7 +54,11 @@ const menuItems = [
   { id: 'mu3ajaneit-kebbeh-pumpkin', name: 'Kebbeh Pumpkin', category: 'mu3ajaneit', price: 360000, priceLabel: 'Dozen — 360,000 LL', description: '', image: "./images/zatar.png/Золотисті кібе з гарбузовою начинкою.png", options: [], popular: false, filters: [] },
   { id: 'dessert-nutella', name: 'Nutella', category: 'desserts', price: 300000, priceLabel: '300,000 LL', description: '', image: "./images/zatar.png/nutella.png", options: [], popular: true, filters: [] },
   { id: 'dessert-halawi', name: 'Halawi', category: 'desserts', price: 300000, priceLabel: '300,000 LL', description: '', image: "./images/zatar.png/halawi.png", options: [], popular: false, filters: [] },
-  { id: 'dessert-meghli', name: 'Meghli', category: 'desserts', price: 150000, priceLabel: '150,000 LL', description: '', image: "./images/zatar.png/meghli.png", options: [], popular: false, filters: [] }
+  { id: 'dessert-meghli', name: 'Meghli', category: 'desserts', price: 150000, priceLabel: '150,000 LL', description: '', image: "./images/zatar.png/meghli.png", options: [], popular: false, filters: [] },
+  { id: 'drinks-pepsi', name: 'Pepsi', category: 'drinks', price: 100000, priceLabel: '100,000 LL', description: '', image: "./images/zatar.png/Холодна Pepsi з льодом на дерев’яному столі.png", options: [], popular: false, filters: [] },
+  { id: 'drinks-pepsi-diet', name: 'Pepsi Diet', category: 'drinks', price: 100000, priceLabel: '100,000 LL', description: '', image: "./images/zatar.png/Холодний Pepsi Zero Sugar на льоду.png", options: [], popular: false, filters: [] },
+  { id: 'drinks-7up', name: '7UP', category: 'drinks', price: 100000, priceLabel: '100,000 LL', description: '', image: "./images/zatar.png/Освіжаючий 7UP з льодом на дерев’яному столі.png", options: [], popular: false, filters: [] },
+  { id: 'drinks-mirinda', name: 'Mirinda', category: 'drinks', price: 100000, priceLabel: '100,000 LL', description: '', image: "./images/zatar.png/Крижана Mirinda Orange на дереві.png", options: [], popular: false, filters: [] }
 ];
 
 const productGrid = document.querySelector('.product-grid');
@@ -259,7 +263,7 @@ const renderProducts = () => {
   const burgerItems = itemsForCategory('burger-sandwich');
   const remainingSections = `
     <section class="product-group" id="burger-sandwich" data-main-section="sandwiches-burgers"><div class="mobile-menu-heading"><span>Nicolas.S</span><h2>BURGER / SANDWICH</h2></div>${burgerItems.map(productCardTemplate).join('')}</section>
-    <section class="product-group" id="drinks-menu" data-main-section="drinks"><div class="mobile-menu-heading"><span>Nicolas.S</span><h2>DRINKS</h2></div><p class="menu-empty">No items in this section yet.</p></section>
+    <section class="product-group" id="drinks-menu" data-main-section="drinks"><div class="mobile-menu-heading"><span>Nicolas.S</span><h2>DRINKS</h2></div>${itemsForCategory('drinks').map(productCardTemplate).join('')}</section>
     <section class="product-group" id="gift-certificates-menu" data-main-section="gift-certificates"><div class="mobile-menu-heading"><span>Nicolas.S</span><h2>GIFT CERTIFICATES</h2></div><p class="menu-empty">No items in this section yet.</p></section>`;
 
   productGrid.innerHTML = miniBitesSections + remainingSections;
@@ -276,7 +280,7 @@ const desktopSections = [
   { id: 'desktop-mu3ajaneit', title: 'MU3AJANEIT', category: 'mu3ajaneit', main: 'mini-bites' },
   { id: 'desktop-desserts', title: 'DESSERTS', category: 'desserts', main: 'mini-bites' },
   { id: 'desktop-burger-sandwich', title: 'SANDWICHES & BURGERS', category: 'burger-sandwich', main: 'sandwiches-burgers' },
-  { id: 'desktop-drinks', title: 'DRINKS', category: null, main: 'drinks' },
+  { id: 'desktop-drinks', title: 'DRINKS', category: 'drinks', main: 'drinks' },
   { id: 'desktop-gift-certificates', title: 'GIFT CERTIFICATES', category: null, main: 'gift-certificates' }
 ];
 
