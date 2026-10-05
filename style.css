@@ -693,3 +693,10 @@ h2 em, h1 em { color: var(--red); font-style: normal; }
 @media (max-width: 768px) {
   .product-footer > .drink-volume { grid-column: 1; grid-row: 3; margin-top: 10px; }
 }
+
+/* Compact food cards when no configured options are available. */
+@media (max-width: 768px) {
+  .product-card.food-card-no-options { grid-template-rows: auto auto auto auto; }
+  .food-card-no-options .product-media { grid-row: 1 / 5; }
+  .food-card-no-options .product-quick-actions { grid-row: 4; margin-top: 12px; }
+}

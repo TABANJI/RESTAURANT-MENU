@@ -174,12 +174,24 @@ document.addEventListener('click', (event) => {
 
 const volumeTemplate = (item) => item.volume ? `<span class="drink-volume"><svg class="drink-volume-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><rect x="6" y="3" width="12" height="18" rx="3"/><path d="M7 7h10M7 17h10M10 5h4"/></svg><span>${escapeHtml(item.volume)}</span></span>` : '';
 
+// The shared vegetableOption is legacy demo data, not a configured modifier.
+const hasAvailableOptions = (item) => {
+  if (item.category === 'drinks' || item.category === 'gift-certificates') return false;
+  return [item.options, item.modifiers].some((entries) => Array.isArray(entries) && entries.some((option) =>
+    option && (option !== vegetableOption || option.available === true) &&
+    option.available !== false && option.enabled !== false &&
+    typeof option.id === 'string' && option.id.trim() &&
+    typeof option.name === 'string' && option.name.trim() &&
+    (!Array.isArray(option.choices) || option.choices.some((choice) => choice && choice.available !== false && choice.enabled !== false))
+  ));
+};
+
 const productCardTemplate = (item) => {
   const isFavorite = favorites.has(item.id);
   const description = item.description ? `<p>${escapeHtml(item.description)}</p>` : '';
   const badge = item.popular ? '<mark>Popular</mark>' : '';
-  const options = item.options.length ? `<button class="options-button" type="button" aria-label="Show options for ${escapeHtml(item.name)}"><span aria-hidden="true">↓</span> Show options</button>` : '';
-  return `<article class="product-card reveal is-visible${item.category === 'gift-certificates' ? ' gift-card' : ''}${item.ingredients ? ' food-card' : ''}" data-product-id="${escapeHtml(item.id)}">
+  const options = hasAvailableOptions(item) ? `<button class="options-button" type="button" aria-label="Show options for ${escapeHtml(item.name)}"><span aria-hidden="true">↓</span> Show options</button>` : '';
+  return `<article class="product-card reveal is-visible${item.category === 'gift-certificates' ? ' gift-card' : ''}${item.ingredients ? ' food-card' : ''}${item.ingredients && !hasAvailableOptions(item) ? ' food-card-no-options' : ''}" data-product-id="${escapeHtml(item.id)}">
     <div class="product-media"><div class="product-image image-placeholder">${item.image ? `<img src="${escapeHtml(encodeURI(item.image))}" alt="${escapeHtml(item.name)}" loading="lazy" decoding="async">` : '<span>PRODUCT PHOTO</span>'}${badge}</div><button type="button" class="add-button mobile-add-button">+ ADD</button></div>
     <div class="product-body"><h3>${escapeHtml(item.name)}</h3>${description}${ingredientsTemplate(item)}<div class="product-options">${options}<div class="product-quick-actions"><button class="favorite-button${isFavorite ? ' is-active' : ''}" type="button" aria-label="${isFavorite ? 'Remove' : 'Add'} ${escapeHtml(item.name)} ${isFavorite ? 'from' : 'to'} favorites" aria-pressed="${isFavorite}">${favoriteIcon}</button><button class="share-button" type="button" aria-label="Share ${escapeHtml(item.name)}">${shareIcon}</button></div></div><div class="product-footer"><strong>${escapeHtml(item.priceLabel)}</strong>${volumeTemplate(item)}<button type="button" class="add-button">Add to order <span>+</span></button></div></div>
   </article>`;
@@ -189,8 +201,8 @@ const desktopProductCardTemplate = (item) => {
   const isFavorite = favorites.has(item.id);
   const description = item.description ? `<p>${escapeHtml(item.description)}</p>` : '';
   const badge = item.popular ? '<mark>Popular</mark>' : '';
-  const options = item.options.length ? `<button class="options-button" type="button"><span aria-hidden="true">↓</span> Show options</button>` : '';
-  return `<article class="desktop-product-card product-card${item.category === 'gift-certificates' ? ' gift-card' : ''}${item.ingredients ? ' food-card' : ''}" data-product-id="${escapeHtml(item.id)}">
+  const options = hasAvailableOptions(item) ? `<button class="options-button" type="button"><span aria-hidden="true">↓</span> Show options</button>` : '';
+  return `<article class="desktop-product-card product-card${item.category === 'gift-certificates' ? ' gift-card' : ''}${item.ingredients ? ' food-card' : ''}${item.ingredients && !hasAvailableOptions(item) ? ' food-card-no-options' : ''}" data-product-id="${escapeHtml(item.id)}">
     <div class="desktop-product-image-wrap"><div class="product-image image-placeholder">${item.image ? `<img src="${escapeHtml(encodeURI(item.image))}" alt="${escapeHtml(item.name)}" loading="lazy" decoding="async">` : '<span>PRODUCT PHOTO</span>'}${badge}</div><button class="favorite-button${isFavorite ? ' is-active' : ''}" type="button" aria-label="${isFavorite ? 'Remove' : 'Add'} ${escapeHtml(item.name)} ${isFavorite ? 'from' : 'to'} favorites" aria-pressed="${isFavorite}">${favoriteIcon}</button></div>
     <div class="desktop-product-body"><h3>${escapeHtml(item.name)}</h3>${item.category === 'gift-certificates' ? `<strong class="gift-card-value">${escapeHtml(item.priceLabel)}</strong>` : ''}${description}${item.ingredients ? `<strong class="food-card-price">${escapeHtml(item.priceLabel)}</strong>` : ''}${ingredientsTemplate(item)}<div class="desktop-product-controls">${options}<button class="share-button" type="button" aria-label="Share ${escapeHtml(item.name)}">${shareIcon}</button></div></div>
     <div class="desktop-product-footer">${item.volume ? `<div class="drink-price-details"><strong class="desktop-product-price">${escapeHtml(item.priceLabel)}</strong>${volumeTemplate(item)}</div>` : `<strong class="desktop-product-price">${escapeHtml(item.priceLabel)}</strong>`}<button type="button" class="add-button">+ ADD</button></div>
