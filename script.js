@@ -25,36 +25,36 @@ const mobileMainSections = [
 ];
 
 const menuItems = [
-  { id: 'mana-zaatar', name: 'Zaatar', category: 'mana2eesh', price: 70000, priceLabel: '70,000 LL', description: '', image: "./images/zatar.png/манакиш із заатаром.png", options: [vegetableOption], popular: true, filters: ['zaatar'] },
-  { id: 'mana-cheese', name: 'Cheese', category: 'mana2eesh', price: 180000, priceLabel: '180,000 LL', description: '', image: "./images/zatar.png/Золотиста сирна манакіш на дерев’яній дошці.png", options: [vegetableOption], popular: false, filters: ['cheese'] },
-  { id: 'mana-spinach', name: 'Spinach', category: 'mana2eesh', price: 80000, priceLabel: '80,000 LL', description: '', image: "./images/zatar.png/سبаніакова манауше зі шпинатом і цибулею.png", options: [vegetableOption], popular: false, filters: ['other'] },
-  { id: 'mana-kishek', name: 'Kishek', category: 'mana2eesh', price: 80000, priceLabel: '80,000 LL', description: '', image: "./images/zatar.png/Домашня піца з кишеком і заатаром.png", options: [vegetableOption], popular: false, filters: ['other'] },
-  { id: 'mana-lahm-b3ajeen', name: 'Lahm B3ajeen', category: 'mana2eesh', price: 180000, priceLabel: '180,000 LL', description: '', image: "./images/zatar.png/Традиційний лахмаджун із зеленню та овочами.png", options: [vegetableOption], popular: false, filters: ['meat'] },
-  { id: 'mana-zaatar-cheese', name: 'Zaatar & Cheese', category: 'mana2eesh', price: 150000, priceLabel: '150,000 LL', description: '', image: "./images/zatar.png/Піца з сиром і заатаром на дерев’яній дошці.png", options: [vegetableOption], popular: true, filters: ['zaatar', 'cheese'] },
-  { id: 'mana-duplex', name: 'Duplex', category: 'mana2eesh', price: 250000, priceLabel: '250,000 LL', description: '', image: "./images/zatar.png/Квартальна манакіш із чотирма смаками.png", options: [vegetableOption], popular: false, filters: ['other'] },
-  { id: 'mana-cheese-ham', name: 'Cheese & Ham', category: 'mana2eesh', price: 250000, priceLabel: '250,000 LL', description: '', image: "./images/zatar.png/Апетитна піца пепероні з сиром.png", options: [vegetableOption], popular: false, filters: ['cheese', 'meat'] },
-  { id: 'mana-cheese-soujouk', name: 'Cheese & Soujouk', category: 'mana2eesh', price: 300000, priceLabel: '300,000 LL', description: '', image: "./images/zatar.png/cheese-soujouk.png", options: [vegetableOption], popular: false, filters: ['cheese', 'meat'] },
-  { id: 'pizza-soujouk', name: 'Soujouk', category: 'italian-pizza', price: 600000, priceLabel: '600,000 LL', description: '', image: "./images/zatar.png/soujouk.png", options: [], popular: false, filters: ['meat'] },
-  { id: 'pizza-pepperoni', name: 'Pepperoni', category: 'italian-pizza', price: 600000, priceLabel: '600,000 LL', description: '', image: "./images/zatar.png/Апетитна піца пепероні з базиліком.png", options: [], popular: true, filters: ['meat'] },
-  { id: 'pizza-marguerita', name: 'Marguerita', category: 'italian-pizza', price: 500000, priceLabel: '500,000 LL', description: '', image: "./images/zatar.png/Апетитна неаполітанська піца Маргарита.png", options: [], popular: false, filters: ['vegetarian'] },
-  { id: 'pizza-vegetarian', name: 'Vegetarian', category: 'italian-pizza', price: 600000, priceLabel: '600,000 LL', description: '', image: "./images/zatar.png/Апетитна овочева піца з базиліком.png", options: [], popular: false, filters: ['vegetarian'] },
-  { id: 'burger-sandwich-burger', name: 'Burger', category: 'burger-sandwich', price: 500000, priceLabel: '500,000 LL', description: '', image: "./images/zatar.png/burger.png", options: [], popular: true, filters: ['burger'] },
-  { id: 'burger-sandwich-batata', name: 'Batata Sandwich', category: 'burger-sandwich', price: 200000, priceLabel: '200,000 LL', description: '', image: "./images/zatar.png/batata-sandwich.png", options: [], popular: false, filters: ['sandwich'] },
-  { id: 'burger-sandwich-italian', name: 'Italian Sandwich', category: 'burger-sandwich', price: 400000, priceLabel: '400,000 LL', description: '', image: "./images/zatar.png/italian-sandwich.png", options: [], popular: false, filters: ['sandwich'] },
-  { id: 'burger-sandwich-chicken', name: 'Chicken Sandwich', category: 'burger-sandwich', price: 400000, priceLabel: '400,000 LL', description: '', image: "./images/zatar.png/chicken-sandwich.png", options: [], popular: false, filters: ['sandwich'] },
-  { id: 'burger-sandwich-biria', name: 'Biria Sandwich', category: 'burger-sandwich', price: 500000, priceLabel: '500,000 LL', description: '', image: "./images/zatar.png/biria-sandwich.png", options: [], popular: false, filters: ['sandwich'] },
-  { id: 'mu3ajaneit-mini-pizza', name: 'Mini Pizza', category: 'mu3ajaneit', price: 360000, priceLabel: 'Dozen — 360,000 LL', description: '', image: "./images/zatar.png/Мініпіци на дерев’яній дошці.png", options: [], popular: true, filters: [] },
-  { id: 'mu3ajaneit-mini-zaatar', name: 'Mini Zaatar', category: 'mu3ajaneit', price: 360000, priceLabel: 'Dozen — 360,000 LL', description: '', image: "./images/zatar.png/Міні-манакіш із заатаром і кунжутом.png", options: [], popular: false, filters: [] },
-  { id: 'mu3ajaneit-mini-cheese', name: 'Mini Cheese', category: 'mu3ajaneit', price: 360000, priceLabel: 'Dozen — 360,000 LL', description: '', image: "./images/zatar.png/Золотисті міні-піци з сиром та базиліком.png", options: [], popular: false, filters: [] },
-  { id: 'mu3ajaneit-mini-spinach', name: 'Mini Spinach', category: 'mu3ajaneit', price: 360000, priceLabel: 'Dozen — 360,000 LL', description: '', image: "./images/zatar.png/Міні-пироги зі шпинатом і сиром.png", options: [], popular: false, filters: [] },
-  { id: 'mu3ajaneit-mini-hotdog', name: 'Mini Hotdog', category: 'mu3ajaneit', price: 360000, priceLabel: 'Dozen — 360,000 LL', description: '', image: "./images/zatar.png/Золотисті міні-ковбаски в тісті.png", options: [], popular: false, filters: [] },
-  { id: 'mu3ajaneit-halloum-rolls', name: 'Halloum Rolls', category: 'mu3ajaneit', price: 360000, priceLabel: 'Dozen — 360,000 LL', description: '', image: "./images/zatar.png/Золотисті сирні рулетики з кунжутом.png", options: [], popular: false, filters: [] },
-  { id: 'mu3ajaneit-cheese-burek', name: 'Cheese Burek', category: 'mu3ajaneit', price: 360000, priceLabel: 'Dozen — 360,000 LL', description: '', image: "./images/zatar.png/Золотисті рулетики бурека з сиром.png", options: [], popular: false, filters: [] },
-  { id: 'mu3ajaneit-kebbeh-meat', name: 'Kebbeh Meat', category: 'mu3ajaneit', price: 360000, priceLabel: 'Dozen — 360,000 LL', description: '', image: "./images/zatar.png/Золотисті кібе на дерев’яній дошці.png", options: [], popular: false, filters: [] },
-  { id: 'mu3ajaneit-kebbeh-pumpkin', name: 'Kebbeh Pumpkin', category: 'mu3ajaneit', price: 360000, priceLabel: 'Dozen — 360,000 LL', description: '', image: "./images/zatar.png/Золотисті кібе з гарбузовою начинкою.png", options: [], popular: false, filters: [] },
-  { id: 'dessert-nutella', name: 'Nutella', category: 'desserts', price: 300000, priceLabel: '300,000 LL', description: '', image: "./images/zatar.png/nutella.png", options: [], popular: true, filters: [] },
-  { id: 'dessert-halawi', name: 'Halawi', category: 'desserts', price: 300000, priceLabel: '300,000 LL', description: '', image: "./images/zatar.png/halawi.png", options: [], popular: false, filters: [] },
-  { id: 'dessert-meghli', name: 'Meghli', category: 'desserts', price: 150000, priceLabel: '150,000 LL', description: '', image: "./images/zatar.png/meghli.png", options: [], popular: false, filters: [] },
+  { id: 'mana-zaatar', ingredients: "Zaatar, olive oil", name: 'Zaatar', category: 'mana2eesh', price: 70000, priceLabel: '70,000 LL', description: '', image: "./images/zatar.png/манакиш із заатаром.png", options: [vegetableOption], popular: true, filters: ['zaatar'] },
+  { id: 'mana-cheese', ingredients: "Akkawi cheese, mozzarella", name: 'Cheese', category: 'mana2eesh', price: 180000, priceLabel: '180,000 LL', description: '', image: "./images/zatar.png/Золотиста сирна манакіш на дерев’яній дошці.png", options: [vegetableOption], popular: false, filters: ['cheese'] },
+  { id: 'mana-spinach', ingredients: "Spinach, onion, sumac, lemon juice, olive oil", name: 'Spinach', category: 'mana2eesh', price: 80000, priceLabel: '80,000 LL', description: '', image: "./images/zatar.png/سبаніакова манауше зі шпинатом і цибулею.png", options: [vegetableOption], popular: false, filters: ['other'] },
+  { id: 'mana-kishek', ingredients: "Kishek, tomato, onion, olive oil", name: 'Kishek', category: 'mana2eesh', price: 80000, priceLabel: '80,000 LL', description: '', image: "./images/zatar.png/Домашня піца з кишеком і заатаром.png", options: [vegetableOption], popular: false, filters: ['other'] },
+  { id: 'mana-lahm-b3ajeen', ingredients: "Seasoned minced meat, tomato, onion, parsley, spices", name: 'Lahm B3ajeen', category: 'mana2eesh', price: 180000, priceLabel: '180,000 LL', description: '', image: "./images/zatar.png/Традиційний лахмаджун із зеленню та овочами.png", options: [vegetableOption], popular: false, filters: ['meat'] },
+  { id: 'mana-zaatar-cheese', ingredients: "Zaatar, olive oil, Akkawi cheese, mozzarella", name: 'Zaatar & Cheese', category: 'mana2eesh', price: 150000, priceLabel: '150,000 LL', description: '', image: "./images/zatar.png/Піца з сиром і заатаром на дерев’яній дошці.png", options: [vegetableOption], popular: true, filters: ['zaatar', 'cheese'] },
+  { id: 'mana-duplex', ingredients: "Zaatar, cheese, spinach, lahm b3ajeen", name: 'Duplex', category: 'mana2eesh', price: 250000, priceLabel: '250,000 LL', description: '', image: "./images/zatar.png/Квартальна манакіш із чотирма смаками.png", options: [vegetableOption], popular: false, filters: ['other'] },
+  { id: 'mana-cheese-ham', ingredients: "Akkawi cheese, mozzarella, ham", name: 'Cheese & Ham', category: 'mana2eesh', price: 250000, priceLabel: '250,000 LL', description: '', image: "./images/zatar.png/Апетитна піца пепероні з сиром.png", options: [vegetableOption], popular: false, filters: ['cheese', 'meat'] },
+  { id: 'mana-cheese-soujouk', ingredients: "Akkawi cheese, mozzarella, soujouk", name: 'Cheese & Soujouk', category: 'mana2eesh', price: 300000, priceLabel: '300,000 LL', description: '', image: "./images/zatar.png/cheese-soujouk.png", options: [vegetableOption], popular: false, filters: ['cheese', 'meat'] },
+  { id: 'pizza-soujouk', ingredients: "Tomato sauce, mozzarella, soujouk, bell pepper, onion", name: 'Soujouk', category: 'italian-pizza', price: 600000, priceLabel: '600,000 LL', description: '', image: "./images/zatar.png/soujouk.png", options: [], popular: false, filters: ['meat'] },
+  { id: 'pizza-pepperoni', ingredients: "Tomato sauce, mozzarella, pepperoni", name: 'Pepperoni', category: 'italian-pizza', price: 600000, priceLabel: '600,000 LL', description: '', image: "./images/zatar.png/Апетитна піца пепероні з базиліком.png", options: [], popular: true, filters: ['meat'] },
+  { id: 'pizza-marguerita', ingredients: "Tomato sauce, mozzarella, fresh basil, olive oil", name: 'Marguerita', category: 'italian-pizza', price: 500000, priceLabel: '500,000 LL', description: '', image: "./images/zatar.png/Апетитна неаполітанська піца Маргарита.png", options: [], popular: false, filters: ['vegetarian'] },
+  { id: 'pizza-vegetarian', ingredients: "Tomato sauce, mozzarella, mushrooms, bell pepper, onion, olives", name: 'Vegetarian', category: 'italian-pizza', price: 600000, priceLabel: '600,000 LL', description: '', image: "./images/zatar.png/Апетитна овочева піца з базиліком.png", options: [], popular: false, filters: ['vegetarian'] },
+  { id: 'burger-sandwich-burger', ingredients: "Beef patty, cheese, lettuce, tomato, onion, pickles, burger sauce", name: 'Burger', category: 'burger-sandwich', price: 500000, priceLabel: '500,000 LL', description: '', image: "./images/zatar.png/burger.png", options: [], popular: true, filters: ['burger'] },
+  { id: 'burger-sandwich-batata', ingredients: "French fries, lettuce, tomato, pickles, garlic sauce, ketchup", name: 'Batata Sandwich', category: 'burger-sandwich', price: 200000, priceLabel: '200,000 LL', description: '', image: "./images/zatar.png/batata-sandwich.png", options: [], popular: false, filters: ['sandwich'] },
+  { id: 'burger-sandwich-italian', ingredients: "Mozzarella, Italian cold cuts, tomato, lettuce, onion, sauce", name: 'Italian Sandwich', category: 'burger-sandwich', price: 400000, priceLabel: '400,000 LL', description: '', image: "./images/zatar.png/italian-sandwich.png", options: [], popular: false, filters: ['sandwich'] },
+  { id: 'burger-sandwich-chicken', ingredients: "Grilled marinated chicken, lettuce, tomato, pickles, garlic sauce", name: 'Chicken Sandwich', category: 'burger-sandwich', price: 400000, priceLabel: '400,000 LL', description: '', image: "./images/zatar.png/chicken-sandwich.png", options: [], popular: false, filters: ['sandwich'] },
+  { id: 'burger-sandwich-biria', ingredients: "Slow-cooked beef, cheese, onion, cilantro, birria sauce, lime", name: 'Biria Sandwich', category: 'burger-sandwich', price: 500000, priceLabel: '500,000 LL', description: '', image: "./images/zatar.png/biria-sandwich.png", options: [], popular: false, filters: ['sandwich'] },
+  { id: 'mu3ajaneit-mini-pizza', ingredients: "Tomato sauce, mozzarella", name: 'Mini Pizza', category: 'mu3ajaneit', price: 360000, priceLabel: 'Dozen — 360,000 LL', description: '', image: "./images/zatar.png/Мініпіци на дерев’яній дошці.png", options: [], popular: true, filters: [] },
+  { id: 'mu3ajaneit-mini-zaatar', ingredients: "Zaatar, olive oil", name: 'Mini Zaatar', category: 'mu3ajaneit', price: 360000, priceLabel: 'Dozen — 360,000 LL', description: '', image: "./images/zatar.png/Міні-манакіш із заатаром і кунжутом.png", options: [], popular: false, filters: [] },
+  { id: 'mu3ajaneit-mini-cheese', ingredients: "Akkawi cheese, mozzarella", name: 'Mini Cheese', category: 'mu3ajaneit', price: 360000, priceLabel: 'Dozen — 360,000 LL', description: '', image: "./images/zatar.png/Золотисті міні-піци з сиром та базиліком.png", options: [], popular: false, filters: [] },
+  { id: 'mu3ajaneit-mini-spinach', ingredients: "Spinach, onion, sumac, lemon juice", name: 'Mini Spinach', category: 'mu3ajaneit', price: 360000, priceLabel: 'Dozen — 360,000 LL', description: '', image: "./images/zatar.png/Міні-пироги зі шпинатом і сиром.png", options: [], popular: false, filters: [] },
+  { id: 'mu3ajaneit-mini-hotdog', ingredients: "Mini hotdog sausage", name: 'Mini Hotdog', category: 'mu3ajaneit', price: 360000, priceLabel: 'Dozen — 360,000 LL', description: '', image: "./images/zatar.png/Золотисті міні-ковбаски в тісті.png", options: [], popular: false, filters: [] },
+  { id: 'mu3ajaneit-halloum-rolls', ingredients: "Halloumi cheese, sesame", name: 'Halloum Rolls', category: 'mu3ajaneit', price: 360000, priceLabel: 'Dozen — 360,000 LL', description: '', image: "./images/zatar.png/Золотисті сирні рулетики з кунжутом.png", options: [], popular: false, filters: [] },
+  { id: 'mu3ajaneit-cheese-burek', ingredients: "Cheese filling, sesame", name: 'Cheese Burek', category: 'mu3ajaneit', price: 360000, priceLabel: 'Dozen — 360,000 LL', description: '', image: "./images/zatar.png/Золотисті рулетики бурека з сиром.png", options: [], popular: false, filters: [] },
+  { id: 'mu3ajaneit-kebbeh-meat', ingredients: "Bulgur, seasoned meat, onion, spices", name: 'Kebbeh Meat', category: 'mu3ajaneit', price: 360000, priceLabel: 'Dozen — 360,000 LL', description: '', image: "./images/zatar.png/Золотисті кібе на дерев’яній дошці.png", options: [], popular: false, filters: [] },
+  { id: 'mu3ajaneit-kebbeh-pumpkin', ingredients: "Pumpkin, bulgur, onion, spices", name: 'Kebbeh Pumpkin', category: 'mu3ajaneit', price: 360000, priceLabel: 'Dozen — 360,000 LL', description: '', image: "./images/zatar.png/Золотисті кібе з гарбузовою начинкою.png", options: [], popular: false, filters: [] },
+  { id: 'dessert-nutella', ingredients: "Nutella, banana, crushed nuts", name: 'Nutella', category: 'desserts', price: 300000, priceLabel: '300,000 LL', description: '', image: "./images/zatar.png/nutella.png", options: [], popular: true, filters: [] },
+  { id: 'dessert-halawi', ingredients: "Halawa, pistachios", name: 'Halawi', category: 'desserts', price: 300000, priceLabel: '300,000 LL', description: '', image: "./images/zatar.png/halawi.png", options: [], popular: false, filters: [] },
+  { id: 'dessert-meghli', ingredients: "Rice flour, sugar, cinnamon, caraway, anise, coconut, pistachios, mixed nuts", name: 'Meghli', category: 'desserts', price: 150000, priceLabel: '150,000 LL', description: '', image: "./images/zatar.png/meghli.png", options: [], popular: false, filters: [] },
   { id: 'drinks-pepsi', name: 'Pepsi', category: 'drinks', price: 100000, priceLabel: '100,000 LL', description: '', image: "./images/zatar.png/Холодна Pepsi з льодом на дерев’яному столі.png", options: [], popular: false, filters: [] },
   { id: 'drinks-pepsi-diet', name: 'Pepsi Diet', category: 'drinks', price: 100000, priceLabel: '100,000 LL', description: '', image: "./images/zatar.png/Холодний Pepsi Zero Sugar на льоду.png", options: [], popular: false, filters: [] },
   { id: 'drinks-7up', name: '7UP', category: 'drinks', price: 100000, priceLabel: '100,000 LL', description: '', image: "./images/zatar.png/Освіжаючий 7UP з льодом на дерев’яному столі.png", options: [], popular: false, filters: [] },
@@ -129,14 +129,57 @@ const shareIcon = '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="18" c
 
 const giftCardTerms = `<aside class="gift-card-terms"><h3>GIFT CARD TERMS</h3><p>Gift cards are denominated in USD. LBP equivalent is calculated at the restaurant's current exchange rate on the date of redemption. Gift cards are not redeemable for cash.</p></aside>`;
 
+const ingredientsTemplate = (item) => item.ingredients ? `<div class="food-ingredients" data-ingredients="${escapeHtml(item.ingredients)}"><span class="food-ingredients-text">${escapeHtml(item.ingredients)}</span> <button type="button" class="ingredients-toggle" aria-expanded="false" hidden>Show more</button></div>` : '';
+
+const fitIngredients = (block) => {
+  if (!block.getBoundingClientRect().width) return;
+  const text = block.querySelector('.food-ingredients-text');
+  const button = block.querySelector('.ingredients-toggle');
+  const full = block.dataset.ingredients;
+  text.textContent = full;
+  if (button.getAttribute('aria-expanded') === 'true') return;
+  button.hidden = true;
+  const limit = parseFloat(getComputedStyle(block).lineHeight) * 2 + 1;
+  if (block.getBoundingClientRect().height <= limit) return;
+  button.hidden = false;
+  button.textContent = 'Show more';
+  const words = full.split(' ');
+  let low = 0;
+  let high = words.length;
+  while (low < high) {
+    const mid = Math.ceil((low + high) / 2);
+    text.textContent = words.slice(0, mid).join(' ') + '…';
+    if (block.getBoundingClientRect().height <= limit) low = mid;
+    else high = mid - 1;
+  }
+  text.textContent = words.slice(0, low).join(' ') + '…';
+};
+
+const refreshIngredients = () => requestAnimationFrame(() => {
+  document.querySelectorAll('.food-ingredients').forEach(fitIngredients);
+});
+
+window.addEventListener('resize', refreshIngredients);
+document.fonts?.ready.then(refreshIngredients);
+document.addEventListener('click', (event) => {
+  const button = event.target.closest('.ingredients-toggle');
+  if (!button) return;
+  event.preventDefault();
+  event.stopImmediatePropagation();
+  const expanded = button.getAttribute('aria-expanded') !== 'true';
+  button.setAttribute('aria-expanded', String(expanded));
+  button.textContent = expanded ? 'Show less' : 'Show more';
+  fitIngredients(button.closest('.food-ingredients'));
+}, true);
+
 const productCardTemplate = (item) => {
   const isFavorite = favorites.has(item.id);
   const description = item.description ? `<p>${escapeHtml(item.description)}</p>` : '';
   const badge = item.popular ? '<mark>Popular</mark>' : '';
   const options = item.options.length ? `<button class="options-button" type="button" aria-label="Show options for ${escapeHtml(item.name)}"><span aria-hidden="true">↓</span> Show options</button>` : '';
-  return `<article class="product-card reveal is-visible${item.category === 'gift-certificates' ? ' gift-card' : ''}" data-product-id="${escapeHtml(item.id)}">
+  return `<article class="product-card reveal is-visible${item.category === 'gift-certificates' ? ' gift-card' : ''}${item.ingredients ? ' food-card' : ''}" data-product-id="${escapeHtml(item.id)}">
     <div class="product-media"><div class="product-image image-placeholder">${item.image ? `<img src="${escapeHtml(encodeURI(item.image))}" alt="${escapeHtml(item.name)}" loading="lazy" decoding="async">` : '<span>PRODUCT PHOTO</span>'}${badge}</div><button type="button" class="add-button mobile-add-button">+ ADD</button></div>
-    <div class="product-body"><h3>${escapeHtml(item.name)}</h3>${description}<div class="product-options">${options}<div class="product-quick-actions"><button class="favorite-button${isFavorite ? ' is-active' : ''}" type="button" aria-label="${isFavorite ? 'Remove' : 'Add'} ${escapeHtml(item.name)} ${isFavorite ? 'from' : 'to'} favorites" aria-pressed="${isFavorite}">${favoriteIcon}</button><button class="share-button" type="button" aria-label="Share ${escapeHtml(item.name)}">${shareIcon}</button></div></div><div class="product-footer"><strong>${escapeHtml(item.priceLabel)}</strong><button type="button" class="add-button">Add to order <span>+</span></button></div></div>
+    <div class="product-body"><h3>${escapeHtml(item.name)}</h3>${description}${ingredientsTemplate(item)}<div class="product-options">${options}<div class="product-quick-actions"><button class="favorite-button${isFavorite ? ' is-active' : ''}" type="button" aria-label="${isFavorite ? 'Remove' : 'Add'} ${escapeHtml(item.name)} ${isFavorite ? 'from' : 'to'} favorites" aria-pressed="${isFavorite}">${favoriteIcon}</button><button class="share-button" type="button" aria-label="Share ${escapeHtml(item.name)}">${shareIcon}</button></div></div><div class="product-footer"><strong>${escapeHtml(item.priceLabel)}</strong><button type="button" class="add-button">Add to order <span>+</span></button></div></div>
   </article>`;
 };
 
@@ -145,9 +188,9 @@ const desktopProductCardTemplate = (item) => {
   const description = item.description ? `<p>${escapeHtml(item.description)}</p>` : '';
   const badge = item.popular ? '<mark>Popular</mark>' : '';
   const options = item.options.length ? `<button class="options-button" type="button"><span aria-hidden="true">↓</span> Show options</button>` : '';
-  return `<article class="desktop-product-card product-card${item.category === 'gift-certificates' ? ' gift-card' : ''}" data-product-id="${escapeHtml(item.id)}">
+  return `<article class="desktop-product-card product-card${item.category === 'gift-certificates' ? ' gift-card' : ''}${item.ingredients ? ' food-card' : ''}" data-product-id="${escapeHtml(item.id)}">
     <div class="desktop-product-image-wrap"><div class="product-image image-placeholder">${item.image ? `<img src="${escapeHtml(encodeURI(item.image))}" alt="${escapeHtml(item.name)}" loading="lazy" decoding="async">` : '<span>PRODUCT PHOTO</span>'}${badge}</div><button class="favorite-button${isFavorite ? ' is-active' : ''}" type="button" aria-label="${isFavorite ? 'Remove' : 'Add'} ${escapeHtml(item.name)} ${isFavorite ? 'from' : 'to'} favorites" aria-pressed="${isFavorite}">${favoriteIcon}</button></div>
-    <div class="desktop-product-body"><h3>${escapeHtml(item.name)}</h3>${item.category === 'gift-certificates' ? `<strong class="gift-card-value">${escapeHtml(item.priceLabel)}</strong>` : ''}${description}<div class="desktop-product-controls">${options}<button class="share-button" type="button" aria-label="Share ${escapeHtml(item.name)}">${shareIcon}</button></div></div>
+    <div class="desktop-product-body"><h3>${escapeHtml(item.name)}</h3>${item.category === 'gift-certificates' ? `<strong class="gift-card-value">${escapeHtml(item.priceLabel)}</strong>` : ''}${description}${item.ingredients ? `<strong class="food-card-price">${escapeHtml(item.priceLabel)}</strong>` : ''}${ingredientsTemplate(item)}<div class="desktop-product-controls">${options}<button class="share-button" type="button" aria-label="Share ${escapeHtml(item.name)}">${shareIcon}</button></div></div>
     <div class="desktop-product-footer"><strong class="desktop-product-price">${escapeHtml(item.priceLabel)}</strong><button type="button" class="add-button">+ ADD</button></div>
   </article>`;
 };
@@ -255,6 +298,7 @@ const renderProducts = () => {
   if (window.innerWidth > 768) {
     const items = itemsForCategory(activeCategory);
     productGrid.innerHTML = items.map(productCardTemplate).join('');
+    refreshIngredients();
     startScrollSpy();
     return;
   }
@@ -272,6 +316,7 @@ const renderProducts = () => {
     <section class="product-group" id="gift-certificates-menu" data-main-section="gift-certificates"><div class="mobile-menu-heading"><span>Nicolas.S</span><h2>GIFT CERTIFICATES</h2></div>${itemsForCategory('gift-certificates').map(productCardTemplate).join('')}${giftCardTerms}</section>`;
 
   productGrid.innerHTML = miniBitesSections + remainingSections;
+  refreshIngredients();
   startScrollSpy();
 };
 
@@ -361,6 +406,7 @@ const renderDesktopProducts = () => {
     const content = items.length ? items.map(desktopProductCardTemplate).join('') : `<p class="desktop-empty-section">${section.category ? 'No matching items.' : 'No verified menu items are available for this section yet.'}</p>`;
     return `<section class="desktop-menu-section" id="${section.id}" data-desktop-main="${section.main}"><header class="desktop-section-heading"><span>Nicolas.S</span><h2>${section.title}</h2></header>${content}${section.category === 'gift-certificates' ? giftCardTerms : ''}</section>`;
   }).join('');
+  refreshIngredients();
   startDesktopScrollSpy();
 };
 
