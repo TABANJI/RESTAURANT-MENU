@@ -685,3 +685,10 @@ h2 em, h1 em { color: var(--red); font-style: normal; }
   .desktop-product-card.food-card .desktop-product-footer > .desktop-product-price { display: none; }
   .desktop-product-card.food-card .desktop-product-footer { justify-content: flex-end; }
 }
+
+/* Serving size for drinks only. */
+.drink-volume { display: block; margin-top: 5px; color: #66635c; font-size: 12px; font-weight: 400; line-height: 1.5; }
+.drink-price-details { min-width: 0; }
+@media (max-width: 768px) {
+  .product-footer > .drink-volume { grid-column: 1; grid-row: 3; margin-top: 10px; }
+}
