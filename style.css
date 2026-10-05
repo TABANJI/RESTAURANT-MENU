@@ -687,7 +687,8 @@ h2 em, h1 em { color: var(--red); font-style: normal; }
 }
 
 /* Serving size for drinks only. */
-.drink-volume { display: block; margin-top: 5px; color: #66635c; font-size: 12px; font-weight: 400; line-height: 1.5; }
+.drink-volume { display: flex; align-items: center; gap: 6px; margin-top: 6px; color: #66635c; font-size: 14px; font-weight: 400; line-height: 1.5; }
+.drink-volume-icon { display: block; flex: 0 0 16px; width: 16px; height: 16px; fill: none; stroke: currentColor; stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round; }
 .drink-price-details { min-width: 0; }
 @media (max-width: 768px) {
   .product-footer > .drink-volume { grid-column: 1; grid-row: 3; margin-top: 10px; }
