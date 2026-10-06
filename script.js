@@ -129,48 +129,7 @@ const shareIcon = '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="18" c
 
 const giftCardTerms = `<aside class="gift-card-terms"><h3>GIFT CARD TERMS</h3><p>Gift cards are denominated in USD. LBP equivalent is calculated at the restaurant's current exchange rate on the date of redemption. Gift cards are not redeemable for cash.</p></aside>`;
 
-const ingredientsTemplate = (item) => item.ingredients ? `<div class="food-ingredients" data-ingredients="${escapeHtml(item.ingredients)}"><span class="food-ingredients-text">${escapeHtml(item.ingredients)}</span> <button type="button" class="ingredients-toggle" aria-expanded="false" hidden>Show more</button></div>` : '';
-
-const fitIngredients = (block) => {
-  if (!block.getBoundingClientRect().width) return;
-  const text = block.querySelector('.food-ingredients-text');
-  const button = block.querySelector('.ingredients-toggle');
-  const full = block.dataset.ingredients;
-  text.textContent = full;
-  if (button.getAttribute('aria-expanded') === 'true') return;
-  button.hidden = true;
-  const limit = parseFloat(getComputedStyle(block).lineHeight) * 2 + 1;
-  if (block.getBoundingClientRect().height <= limit) return;
-  button.hidden = false;
-  button.textContent = 'Show more';
-  const words = full.split(' ');
-  let low = 0;
-  let high = words.length;
-  while (low < high) {
-    const mid = Math.ceil((low + high) / 2);
-    text.textContent = words.slice(0, mid).join(' ') + '…';
-    if (block.getBoundingClientRect().height <= limit) low = mid;
-    else high = mid - 1;
-  }
-  text.textContent = words.slice(0, low).join(' ') + '…';
-};
-
-const refreshIngredients = () => requestAnimationFrame(() => {
-  document.querySelectorAll('.food-ingredients').forEach(fitIngredients);
-});
-
-window.addEventListener('resize', refreshIngredients);
-document.fonts?.ready.then(refreshIngredients);
-document.addEventListener('click', (event) => {
-  const button = event.target.closest('.ingredients-toggle');
-  if (!button) return;
-  event.preventDefault();
-  event.stopImmediatePropagation();
-  const expanded = button.getAttribute('aria-expanded') !== 'true';
-  button.setAttribute('aria-expanded', String(expanded));
-  button.textContent = expanded ? 'Show less' : 'Show more';
-  fitIngredients(button.closest('.food-ingredients'));
-}, true);
+const ingredientsTemplate = (item) => item.ingredients ? `<div class="food-ingredients">${escapeHtml(item.ingredients)}</div>` : '';
 
 const volumeTemplate = (item) => item.volume ? `<span class="drink-volume"><svg class="drink-volume-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><rect x="6" y="3" width="12" height="18" rx="3"/><path d="M7 7h10M7 17h10M10 5h4"/></svg><span>${escapeHtml(item.volume)}</span></span>` : '';
 
@@ -310,7 +269,6 @@ const renderProducts = () => {
   if (window.innerWidth > 768) {
     const items = itemsForCategory(activeCategory);
     productGrid.innerHTML = items.map(productCardTemplate).join('');
-    refreshIngredients();
     startScrollSpy();
     return;
   }
@@ -328,7 +286,6 @@ const renderProducts = () => {
     <section class="product-group" id="gift-certificates-menu" data-main-section="gift-certificates"><div class="mobile-menu-heading"><span>Nicolas.S</span><h2>GIFT CERTIFICATES</h2></div>${itemsForCategory('gift-certificates').map(productCardTemplate).join('')}${giftCardTerms}</section>`;
 
   productGrid.innerHTML = miniBitesSections + remainingSections;
-  refreshIngredients();
   startScrollSpy();
 };
 
@@ -418,7 +375,6 @@ const renderDesktopProducts = () => {
     const content = items.length ? items.map(desktopProductCardTemplate).join('') : `<p class="desktop-empty-section">${section.category ? 'No matching items.' : 'No verified menu items are available for this section yet.'}</p>`;
     return `<section class="desktop-menu-section" id="${section.id}" data-desktop-main="${section.main}"><header class="desktop-section-heading"><span>Nicolas.S</span><h2>${section.title}</h2></header>${content}${section.category === 'gift-certificates' ? giftCardTerms : ''}</section>`;
   }).join('');
-  refreshIngredients();
   startDesktopScrollSpy();
 };
 

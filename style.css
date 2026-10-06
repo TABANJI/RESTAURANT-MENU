@@ -674,9 +674,6 @@ h2 em, h1 em { color: var(--red); font-style: normal; }
 
 /* Ingredients: food cards only. */
 .food-card .food-ingredients { min-width: 0; margin: 9px 0 0; color: #66635c; font-size: 12px; font-weight: 400; line-height: 1.5; overflow-wrap: anywhere; }
-.food-card .ingredients-toggle { display: inline; padding: 0; border: 0; border-radius: 0; background: none; color: var(--dark); font: inherit; font-weight: 700; white-space: nowrap; cursor: pointer; }
-.food-card .ingredients-toggle[hidden] { display: none; }
-.food-card .ingredients-toggle:focus-visible { outline: 2px solid var(--yellow); outline-offset: 2px; }
 @media (max-width: 768px) {
   .food-card .food-ingredients { grid-column: 1; grid-row: 3; margin-top: 10px; }
 }
