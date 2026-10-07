@@ -617,6 +617,11 @@ window.addEventListener('resize', () => {
 });
 
 // One detail view for every menu item, using the existing product data.
+const drinkUpsellTemplate = (item) => {
+  if (!item.ingredients || item.category === 'drinks' || item.category === 'gift-certificates') return '';
+  return `<section class="detail-drink-upsell" aria-labelledby="detail-drink-heading"><h3 id="detail-drink-heading">Add a drink?</h3><div class="detail-drink-list">${menuItems.filter(drink => drink.category === 'drinks').map(drink => `<div class="detail-drink-row"><div><strong>${escapeHtml(drink.name)}</strong><span>${escapeHtml(drink.volume || '')} · ${escapeHtml(drink.priceLabel)}</span></div><button type="button" class="detail-drink-toggle" data-drink-id="${escapeHtml(drink.id)}" aria-label="Select ${escapeHtml(drink.name)}" aria-pressed="false">+</button></div>`).join('')}</div></section>`;
+};
+
 const productDetailTemplate = (item) => `
   <div class="product-detail-handle" aria-hidden="true"></div>
   <button class="product-detail-close" type="button" aria-label="Close product details">×</button>
@@ -632,6 +637,7 @@ const productDetailTemplate = (item) => `
         <button type="button" class="product-detail-favorite" aria-pressed="${favorites.has(item.id)}">${favoriteIcon}<span>Favorite</span></button>
         <button type="button" class="share-button" data-share-product="${escapeHtml(item.id)}">${shareIcon}<span>Share</span></button>
       </div>
+      ${drinkUpsellTemplate(item)}
       <p class="product-detail-status" role="status"></p>
     </div>
   </div>
@@ -643,6 +649,7 @@ productDetail.setAttribute('role', 'dialog');
 productDetail.setAttribute('aria-modal', 'true');
 productDetail.setAttribute('aria-labelledby', 'product-detail-title');
 document.body.append(productDetail);
+const selectedDetailDrinks = new Set();
 let detailItem = null;
 let detailOrigin = null;
 let detailScroll = 0;
@@ -651,6 +658,7 @@ let detailClosing = false;
 
 const openProductDetail = (item, origin) => {
   if (productDetail.open) return;
+  selectedDetailDrinks.clear();
   detailItem = item;
   detailOrigin = origin;
   detailScroll = window.scrollY;
@@ -683,7 +691,35 @@ productDetail.addEventListener('click', (event) => {
     return;
   }
   if (event.target.closest('.product-detail-close')) closeProductDetail();
-  if (event.target.closest('.product-detail-add')) addProduct(detailItem, event.target.closest('.product-detail-add'));
+  const drinkButton = event.target.closest('.detail-drink-toggle');
+  if (drinkButton) {
+    const id = drinkButton.dataset.drinkId;
+    if (!menuItems.some(item => item.id === id && item.category === 'drinks')) return;
+    if (drinkButton.classList.contains('added')) return;
+    if (selectedDetailDrinks.has(id)) selectedDetailDrinks.delete(id);
+    else selectedDetailDrinks.add(id);
+    const selected = selectedDetailDrinks.has(id);
+    drinkButton.setAttribute('aria-pressed', String(selected));
+    drinkButton.textContent = selected ? '−' : '+';
+    drinkButton.closest('.detail-drink-row').classList.toggle('is-selected', selected);
+    return;
+  }
+  const addButton = event.target.closest('.product-detail-add');
+  if (addButton) {
+    if (addButton.classList.contains('added')) return;
+    addProduct(detailItem, addButton);
+    productDetail.querySelectorAll('.detail-drink-toggle').forEach(button => {
+      if (!selectedDetailDrinks.has(button.dataset.drinkId)) return;
+      const drink = menuItems.find(item => item.id === button.dataset.drinkId && item.category === 'drinks');
+      if (!drink) return;
+      button.textContent = '+';
+      addProduct(drink, button);
+      button.setAttribute('aria-pressed', 'false');
+      button.closest('.detail-drink-row').classList.remove('is-selected');
+    });
+    selectedDetailDrinks.clear();
+    return;
+  }
   const favorite = event.target.closest('.product-detail-favorite');
   if (favorite) {
     toggleFavorite(detailItem.id);
