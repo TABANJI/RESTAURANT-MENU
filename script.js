@@ -465,6 +465,8 @@ const updateCartBadge = () => {
   });
 };
 const renderCart = () => {
+  cartDialog.classList.remove('is-checkout');
+  cartDialog.setAttribute('aria-label', 'Shopping cart');
   const totals = cartTotals();
   cartDialog.innerHTML = `<header class="cart-heading"><h2>Your cart</h2><button type="button" data-cart-close aria-label="Close cart">×</button></header>
     <div class="cart-content">${totals.quantity ? menuItems.filter(item => cart[item.id]).map(item => `<article class="cart-row" data-cart-id="${escapeHtml(item.id)}">
@@ -487,6 +489,70 @@ const changeCartQuantity = (id, change) => {
   else delete cart[id];
   commitCart();
 };
+let checkoutDraft = { customer: '', phone: '', orderType: 'delivery', address: '', building: '', deliveryNotes: '', notes: '' };
+let pendingOrder = null;
+const checkoutField = (name, label, required = false, type = 'text') => `<label class="checkout-field">${label}${required ? ' *' : ''}<input name="${name}" type="${type}" value="${escapeHtml(checkoutDraft[name])}" ${required ? 'required' : ''} aria-describedby="checkout-error-${name}" autocomplete="${name === 'customer' ? 'name' : name === 'phone' ? 'tel' : 'off'}"><span class="checkout-error" id="checkout-error-${name}"></span></label>`;
+const checkoutItems = () => menuItems.filter(item => cart[item.id]).map(item => ({ id: item.id, name: item.name, price: item.price, currency: item.category === 'gift-certificates' ? 'USD' : 'LL', quantity: cart[item.id], total: item.price * cart[item.id] }));
+const buildOrder = (draft) => ({
+  customer: draft.customer.trim(), phone: draft.phone.trim(), orderType: draft.orderType,
+  address: draft.orderType === 'delivery' ? { street: draft.address.trim(), building: draft.building.trim(), deliveryNotes: draft.deliveryNotes.trim() } : null,
+  notes: draft.notes.trim(), paymentMethod: 'cash', items: checkoutItems(),
+  subtotal: { LL: cartTotals().ll, USD: cartTotals().usd }, timestamp: new Date().toISOString()
+});
+const renderCheckout = () => {
+  if (!cartTotals().quantity) return renderCart();
+  cartDialog.classList.add('is-checkout');
+  cartDialog.setAttribute('aria-label', 'Checkout');
+  const totals = cartTotals();
+  cartDialog.innerHTML = `<header class="cart-heading"><button type="button" data-cart-back aria-label="Back to cart">←</button><h2>Checkout</h2><button type="button" data-cart-back aria-label="Back to cart">×</button></header>
+  <form id="checkout-form" class="cart-content checkout-content" novalidate>
+    <fieldset class="checkout-type"><legend class="checkout-legend">Order type</legend><label><input type="radio" name="orderType" value="delivery" ${checkoutDraft.orderType === 'delivery' ? 'checked' : ''}>Delivery</label><label><input type="radio" name="orderType" value="pickup" ${checkoutDraft.orderType === 'pickup' ? 'checked' : ''}>Pickup</label></fieldset>
+    ${checkoutField('customer', 'Full name', true)}${checkoutField('phone', 'Phone number', true, 'tel')}
+    <fieldset class="checkout-delivery" ${checkoutDraft.orderType === 'pickup' ? 'hidden disabled' : ''}><legend class="checkout-legend">Delivery details</legend>${checkoutField('address', 'Delivery address', true)}${checkoutField('building', 'Building / Floor / Apartment')}${checkoutField('deliveryNotes', 'Delivery notes (optional)')}</fieldset>
+    <label class="checkout-field">Order notes (optional)<textarea name="notes" rows="2">${escapeHtml(checkoutDraft.notes)}</textarea></label>
+    <fieldset class="checkout-payment"><legend>Payment method</legend><label><input type="radio" name="paymentMethod" value="cash" checked> Cash on delivery / pickup</label></fieldset>
+    <section class="checkout-summary"><h3>Order summary</h3>${checkoutItems().map(item => `<div><span>${escapeHtml(item.name)} ×${item.quantity}</span><strong>${item.currency === 'USD' ? '$' + cartNumber(item.total) : cartNumber(item.total) + ' LL'}</strong></div>`).join('')}<div class="checkout-subtotal"><span>Subtotal</span><strong>${cartNumber(totals.ll)} LL</strong></div>${totals.usd ? `<div><span>Gift cards (USD)</span><strong>${'$' + cartNumber(totals.usd)}</strong></div>` : ''}</section>
+    <p class="checkout-status" role="status"></p>
+  </form><footer class="cart-footer"><button type="submit" form="checkout-form" class="cart-checkout">PLACE ORDER</button></footer>`;
+};
+cartDialog.addEventListener('input', event => {
+  const field = event.target;
+  if (!field.closest('#checkout-form') || !Object.hasOwn(checkoutDraft, field.name)) return;
+  checkoutDraft[field.name] = field.value;
+  pendingOrder = null;
+  const error = cartDialog.querySelector('#checkout-error-' + field.name);
+  if (error) { error.textContent = ''; field.removeAttribute('aria-invalid'); }
+  cartDialog.querySelector('.checkout-status').textContent = '';
+});
+cartDialog.addEventListener('change', event => {
+  if (event.target.name !== 'orderType') return;
+  checkoutDraft.orderType = event.target.value;
+  const delivery = cartDialog.querySelector('.checkout-delivery');
+  delivery.hidden = checkoutDraft.orderType === 'pickup';
+  delivery.disabled = delivery.hidden;
+  pendingOrder = null;
+  cartDialog.querySelector('.checkout-status').textContent = '';
+});
+cartDialog.addEventListener('submit', event => {
+  if (event.target.id !== 'checkout-form') return;
+  event.preventDefault();
+  const form = event.target;
+  for (const field of form.elements) if (Object.hasOwn(checkoutDraft, field.name) && (field.type !== 'radio' || field.checked)) checkoutDraft[field.name] = field.value;
+  let firstInvalid = null;
+  for (const name of ['customer', 'phone', ...(checkoutDraft.orderType === 'delivery' ? ['address'] : [])]) {
+    const field = form.elements.namedItem(name);
+    const invalid = !checkoutDraft[name].trim();
+    field.setAttribute('aria-invalid', String(invalid));
+    cartDialog.querySelector('#checkout-error-' + name).textContent = invalid ? 'Please fill in this field.' : '';
+    if (invalid && !firstInvalid) firstInvalid = field;
+  }
+  if (firstInvalid) { pendingOrder = null; firstInvalid.focus(); return; }
+  if (!cartTotals().quantity) { pendingOrder = null; cartDialog.querySelector('.checkout-status').textContent = 'Your cart is empty.'; return; }
+  pendingOrder = buildOrder(checkoutDraft);
+  cartDialog.querySelector('.checkout-status').textContent = 'Order ready to submit';
+  cartDialog.querySelector('.checkout-status').scrollIntoView({ block: 'nearest' });
+});
+
 const closeCart = () => {
   cartDialog.close();
   if (cartBodyStyle === null) document.body.removeAttribute('style');
@@ -503,7 +569,7 @@ document.querySelectorAll('.cart-trigger').forEach(button => button.addEventList
   cartDialog.showModal();
   cartDialog.querySelector('[data-cart-close]').focus();
 }));
-cartDialog.addEventListener('cancel', event => { event.preventDefault(); closeCart(); });
+cartDialog.addEventListener('cancel', event => { event.preventDefault(); if (cartDialog.classList.contains('is-checkout')) { renderCart(); cartDialog.querySelector('[data-cart-checkout]').focus(); } else closeCart(); });
 cartDialog.addEventListener('click', event => {
   if (event.target === cartDialog) {
     const rect = cartDialog.getBoundingClientRect();
@@ -515,8 +581,8 @@ cartDialog.addEventListener('click', event => {
   if (button.hasAttribute('data-cart-close')) return closeCart();
   if (button.hasAttribute('data-cart-back')) { renderCart(); cartDialog.querySelector('[data-cart-checkout]').focus(); return; }
   if (button.hasAttribute('data-cart-checkout')) {
-    cartDialog.innerHTML = '<header class="cart-heading"><h2>Checkout</h2><button type="button" data-cart-close aria-label="Close checkout">×</button></header><div class="cart-content cart-checkout-message"><h3>Checkout is coming soon</h3><p>Your cart is saved. No order has been placed.</p><button type="button" data-cart-back>Back to cart</button></div>';
-    cartDialog.querySelector('[data-cart-back]').focus();
+    renderCheckout();
+    cartDialog.querySelector('[name="customer"]')?.focus();
     return;
   }
   const row = button.closest('[data-cart-id]');
