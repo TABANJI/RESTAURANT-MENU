@@ -149,7 +149,7 @@ const productCardTemplate = (item) => {
   const isFavorite = favorites.has(item.id);
   const description = item.description ? `<p>${escapeHtml(item.description)}</p>` : '';
   const badge = item.popular ? '<mark>Popular</mark>' : '';
-  return `<article class="product-card reveal is-visible${item.category === 'gift-certificates' ? ' gift-card' : ''}${item.ingredients ? ' food-card' : ''}${item.ingredients ? ' food-card-no-options' : ''}" data-product-id="${escapeHtml(item.id)}">
+  return `<article class="product-card reveal is-visible${item.category === 'gift-certificates' ? ' gift-card' : ''}${item.ingredients ? ' food-card' : ''}${item.ingredients ? ' food-card-no-options' : ''}" data-product-id="${escapeHtml(item.id)}" tabindex="0" aria-haspopup="dialog">
     <div class="product-media"><div class="product-image image-placeholder">${item.image ? `<img src="${escapeHtml(encodeURI(item.image))}" alt="${escapeHtml(item.name)}" loading="lazy" decoding="async">` : '<span>PRODUCT PHOTO</span>'}${badge}</div><button type="button" class="add-button mobile-add-button">+ ADD</button></div>
     <div class="product-body"><h3>${escapeHtml(item.name)}</h3>${description}${ingredientsTemplate(item)}<div class="product-options"><div class="product-quick-actions"><button class="favorite-button${isFavorite ? ' is-active' : ''}" type="button" aria-label="${isFavorite ? 'Remove' : 'Add'} ${escapeHtml(item.name)} ${isFavorite ? 'from' : 'to'} favorites" aria-pressed="${isFavorite}">${favoriteIcon}</button><button class="share-button" type="button" aria-label="Share ${escapeHtml(item.name)}">${shareIcon}</button></div></div><div class="product-footer"><strong>${escapeHtml(item.priceLabel)}</strong>${volumeTemplate(item)}<button type="button" class="add-button">Add to order <span>+</span></button></div></div>
   </article>`;
@@ -159,7 +159,7 @@ const desktopProductCardTemplate = (item) => {
   const isFavorite = favorites.has(item.id);
   const description = item.description ? `<p>${escapeHtml(item.description)}</p>` : '';
   const badge = item.popular ? '<mark>Popular</mark>' : '';
-  return `<article class="desktop-product-card product-card${item.category === 'gift-certificates' ? ' gift-card' : ''}${item.ingredients ? ' food-card' : ''}${item.ingredients ? ' food-card-no-options' : ''}" data-product-id="${escapeHtml(item.id)}">
+  return `<article class="desktop-product-card product-card${item.category === 'gift-certificates' ? ' gift-card' : ''}${item.ingredients ? ' food-card' : ''}${item.ingredients ? ' food-card-no-options' : ''}" data-product-id="${escapeHtml(item.id)}" tabindex="0" aria-haspopup="dialog">
     <div class="desktop-product-image-wrap"><div class="product-image image-placeholder">${item.image ? `<img src="${escapeHtml(encodeURI(item.image))}" alt="${escapeHtml(item.name)}" loading="lazy" decoding="async">` : '<span>PRODUCT PHOTO</span>'}${badge}</div><button class="favorite-button${isFavorite ? ' is-active' : ''}" type="button" aria-label="${isFavorite ? 'Remove' : 'Add'} ${escapeHtml(item.name)} ${isFavorite ? 'from' : 'to'} favorites" aria-pressed="${isFavorite}">${favoriteIcon}</button></div>
     <div class="desktop-product-body"><h3>${escapeHtml(item.name)}</h3>${item.category === 'gift-certificates' ? `<strong class="gift-card-value">${escapeHtml(item.priceLabel)}</strong>` : ''}${description}${item.ingredients ? `<strong class="food-card-price">${escapeHtml(item.priceLabel)}</strong>` : ''}${ingredientsTemplate(item)}<div class="desktop-product-controls"><button class="share-button" type="button" aria-label="Share ${escapeHtml(item.name)}">${shareIcon}</button></div></div>
     <div class="desktop-product-footer">${item.volume ? `<div class="drink-price-details"><strong class="desktop-product-price">${escapeHtml(item.priceLabel)}</strong>${volumeTemplate(item)}</div>` : `<strong class="desktop-product-price">${escapeHtml(item.priceLabel)}</strong>`}<button type="button" class="add-button">+ ADD</button></div>
@@ -431,6 +431,15 @@ const updateActiveNavigation = () => {
 window.addEventListener('scroll', updateActiveNavigation, { passive: true });
 updateActiveNavigation();
 
+const addProduct = (item, button) => {
+  if (button.classList.contains('added')) return;
+  const label = button.firstChild;
+  const original = label.textContent;
+  label.textContent = 'Added';
+  button.classList.add('added');
+  window.setTimeout(() => { label.textContent = original; button.classList.remove('added'); }, 1400);
+};
+
 productGrid.addEventListener('click', (event) => {
   const card = event.target.closest('.product-card');
   if (!card) return;
@@ -438,10 +447,7 @@ productGrid.addEventListener('click', (event) => {
   if (!item) return;
   const addButton = event.target.closest('.add-button');
   if (addButton) {
-    const originalText = addButton.firstChild.textContent;
-    addButton.firstChild.textContent = 'Added ';
-    addButton.classList.add('added');
-    window.setTimeout(() => { addButton.firstChild.textContent = originalText; addButton.classList.remove('added'); }, 1400);
+    addProduct(item, addButton);
     return;
   }
   if (event.target.closest('.favorite-button')) {
@@ -458,9 +464,7 @@ desktopProductGrid.addEventListener('click', (event) => {
   if (!item) return;
   const addButton = event.target.closest('.add-button');
   if (addButton) {
-    addButton.textContent = 'Added';
-    addButton.classList.add('added');
-    window.setTimeout(() => { addButton.textContent = '+ ADD'; addButton.classList.remove('added'); }, 1400);
+    addProduct(item, addButton);
     return;
   }
   if (event.target.closest('.favorite-button')) {
@@ -610,4 +614,116 @@ window.addEventListener('resize', () => {
   viewportWasMobile = viewportIsMobile;
   renderProducts();
   if (!viewportIsMobile) renderDesktopProducts();
+});
+
+// One detail view for every menu item, using the existing product data.
+const productDetailTemplate = (item) => `
+  <div class="product-detail-handle" aria-hidden="true"></div>
+  <button class="product-detail-close" type="button" aria-label="Close product details">×</button>
+  <div class="product-detail-scroll">
+    ${item.image ? `<img class="product-detail-image" src="${escapeHtml(encodeURI(item.image))}" alt="${escapeHtml(item.name)}">` : ''}
+    <div class="product-detail-info">
+      <h2 id="product-detail-title">${escapeHtml(item.name)}</h2>
+      <strong class="product-detail-price">${escapeHtml(item.priceLabel)}</strong>
+      ${volumeTemplate(item)}
+      ${item.ingredients ? `<p class="product-detail-copy">${escapeHtml(item.ingredients)}</p>` : ''}
+      ${item.description ? `<p class="product-detail-copy">${escapeHtml(item.description)}</p>` : ''}
+      <div class="product-detail-actions">
+        <button type="button" class="product-detail-favorite" aria-pressed="${favorites.has(item.id)}">${favoriteIcon}<span>Favorite</span></button>
+        <button type="button" class="share-button" data-share-product="${escapeHtml(item.id)}">${shareIcon}<span>Share</span></button>
+      </div>
+      <p class="product-detail-status" role="status"></p>
+    </div>
+  </div>
+  <div class="product-detail-footer"><button class="product-detail-add" type="button">+ ADD</button></div>`;
+
+const productDetail = document.createElement('dialog');
+productDetail.className = 'product-detail';
+productDetail.setAttribute('role', 'dialog');
+productDetail.setAttribute('aria-modal', 'true');
+productDetail.setAttribute('aria-labelledby', 'product-detail-title');
+document.body.append(productDetail);
+let detailItem = null;
+let detailOrigin = null;
+let detailScroll = 0;
+let detailBodyStyle = null;
+let detailClosing = false;
+
+const openProductDetail = (item, origin) => {
+  if (productDetail.open) return;
+  detailItem = item;
+  detailOrigin = origin;
+  detailScroll = window.scrollY;
+  detailBodyStyle = document.body.getAttribute('style');
+  productDetail.innerHTML = productDetailTemplate(item);
+  Object.assign(document.body.style, { position: 'fixed', top: '-' + detailScroll + 'px', width: '100%' });
+  productDetail.showModal();
+  productDetail.querySelector('.product-detail-close').focus();
+};
+const closeProductDetail = () => {
+  if (!productDetail.open || detailClosing) return;
+  detailClosing = true;
+  productDetail.classList.add('is-closing');
+  window.setTimeout(() => {
+    productDetail.close();
+    productDetail.classList.remove('is-closing');
+    if (detailBodyStyle === null) document.body.removeAttribute('style');
+    else document.body.setAttribute('style', detailBodyStyle);
+    window.scrollTo({ top: detailScroll, behavior: 'instant' });
+    const origin = detailOrigin?.isConnected ? detailOrigin : [...document.querySelectorAll('.product-card')].find(card => card.dataset.productId === detailItem.id && card.getClientRects().length);
+    origin?.focus({ preventScroll: true });
+    detailClosing = false;
+  }, window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 0 : 220);
+};
+productDetail.addEventListener('cancel', (event) => { event.preventDefault(); closeProductDetail(); });
+productDetail.addEventListener('click', (event) => {
+  if (event.target === productDetail) {
+    const rect = productDetail.getBoundingClientRect();
+    if (event.clientX < rect.left || event.clientX > rect.right || event.clientY < rect.top || event.clientY > rect.bottom) closeProductDetail();
+    return;
+  }
+  if (event.target.closest('.product-detail-close')) closeProductDetail();
+  if (event.target.closest('.product-detail-add')) addProduct(detailItem, event.target.closest('.product-detail-add'));
+  const favorite = event.target.closest('.product-detail-favorite');
+  if (favorite) {
+    toggleFavorite(detailItem.id);
+    updateFavoritesCount();
+    renderProducts();
+    renderDesktopProducts();
+    favorite.setAttribute('aria-pressed', String(favorites.has(detailItem.id)));
+  }
+});
+const shareProduct = async (item, button) => {
+  const data = { title: item.name, text: item.name + ' — ' + item.priceLabel, url: window.location.href };
+  try {
+    if (navigator.share) await navigator.share(data);
+    else if (navigator.clipboard?.writeText) {
+      await navigator.clipboard.writeText(data.text + '\n' + data.url);
+      if (productDetail.open) productDetail.querySelector('.product-detail-status').textContent = 'Link copied.';
+      else { const previous = button.getAttribute('aria-label'); button.setAttribute('aria-label', 'Link copied'); window.setTimeout(() => previous === null ? button.removeAttribute('aria-label') : button.setAttribute('aria-label', previous), 2000); }
+    } else window.prompt('Copy product link', data.text + '\n' + data.url);
+  } catch (error) {
+    if (error.name !== 'AbortError') {
+      if (productDetail.open) productDetail.querySelector('.product-detail-status').textContent = 'Unable to share. Please try again.';
+    }
+  }
+};
+document.addEventListener('click', (event) => {
+  const share = event.target.closest('.share-button');
+  if (share) {
+    const id = share.dataset.shareProduct || share.closest('[data-product-id]')?.dataset.productId;
+    const item = menuItems.find(product => product.id === id);
+    if (item) { event.preventDefault(); event.stopPropagation(); shareProduct(item, share); }
+    return;
+  }
+  const card = event.target.closest('.product-card[data-product-id]');
+  if (!card || event.target.closest('button, a, input, select, textarea, label')) return;
+  const item = menuItems.find(product => product.id === card.dataset.productId);
+  if (item) openProductDetail(item, card);
+});
+document.addEventListener('keydown', (event) => {
+  if (!['Enter', ' '].includes(event.key) || !event.target.matches('.product-card[data-product-id]')) return;
+  event.preventDefault();
+  const item = menuItems.find(product => product.id === event.target.dataset.productId);
+  if (item) openProductDetail(item, event.target);
 });
