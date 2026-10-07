@@ -64,6 +64,16 @@ const menuItems = [
   { id: 'gift-card-30', name: 'Nicolas.S Gift Card', category: 'gift-certificates', price: 30, priceLabel: '$30', description: "A special gift for someone special.", image: "./images/zatar.png/Елегантна подарункова картка ресторану Nicolas.S (1).png", options: [], popular: false, filters: [] }
 ];
 
+const cartStorageKey = 'nicolasSCart';
+const readCart = () => {
+  try {
+    const saved = JSON.parse(localStorage.getItem(cartStorageKey) || '{}');
+    if (!saved || typeof saved !== 'object' || Array.isArray(saved)) return {};
+    return Object.fromEntries(Object.entries(saved).filter(([id, quantity]) => menuItems.some(item => item.id === id) && Number.isSafeInteger(quantity) && quantity > 0));
+  } catch { return {}; }
+};
+let cart = readCart();
+
 const productGrid = document.querySelector('.product-grid');
 const categoryHeading = document.querySelector('.mobile-menu-heading h2');
 const categoryRow = document.querySelector('.mobile-category-row');
@@ -145,13 +155,27 @@ const hasAvailableOptions = (item) => {
   ));
 };
 
+const menuAddButton = (item, classes) => {
+  const added = (cart[item.id] || 0) >= 1;
+  return `<button type="button" class="${classes}${added ? ' added' : ''}">${added ? '✓ ADDED' : '+ ADD'}</button>`;
+};
+const syncMenuAddButtons = () => {
+  document.querySelectorAll('.product-card[data-product-id]').forEach(card => {
+    const added = (cart[card.dataset.productId] || 0) >= 1;
+    card.querySelectorAll('.add-button').forEach(button => {
+      button.classList.toggle('added', added);
+      button.textContent = added ? '✓ ADDED' : '+ ADD';
+    });
+  });
+};
+
 const productCardTemplate = (item) => {
   const isFavorite = favorites.has(item.id);
   const description = item.description ? `<p>${escapeHtml(item.description)}</p>` : '';
   const badge = item.popular ? '<mark>Popular</mark>' : '';
   return `<article class="product-card reveal is-visible${item.category === 'gift-certificates' ? ' gift-card' : ''}${item.ingredients ? ' food-card' : ''}${item.ingredients ? ' food-card-no-options' : ''}" data-product-id="${escapeHtml(item.id)}" tabindex="0" aria-haspopup="dialog">
-    <div class="product-media"><div class="product-image image-placeholder">${item.image ? `<img src="${escapeHtml(encodeURI(item.image))}" alt="${escapeHtml(item.name)}" loading="lazy" decoding="async">` : '<span>PRODUCT PHOTO</span>'}${badge}</div><button type="button" class="add-button mobile-add-button">+ ADD</button></div>
-    <div class="product-body"><h3>${escapeHtml(item.name)}</h3>${description}${ingredientsTemplate(item)}<div class="product-options"><div class="product-quick-actions"><button class="favorite-button${isFavorite ? ' is-active' : ''}" type="button" aria-label="${isFavorite ? 'Remove' : 'Add'} ${escapeHtml(item.name)} ${isFavorite ? 'from' : 'to'} favorites" aria-pressed="${isFavorite}">${favoriteIcon}</button><button class="share-button" type="button" aria-label="Share ${escapeHtml(item.name)}">${shareIcon}</button></div></div><div class="product-footer"><strong>${escapeHtml(item.priceLabel)}</strong>${volumeTemplate(item)}<button type="button" class="add-button">Add to order <span>+</span></button></div></div>
+    <div class="product-media"><div class="product-image image-placeholder">${item.image ? `<img src="${escapeHtml(encodeURI(item.image))}" alt="${escapeHtml(item.name)}" loading="lazy" decoding="async">` : '<span>PRODUCT PHOTO</span>'}${badge}</div>${menuAddButton(item, 'add-button mobile-add-button')}</div>
+    <div class="product-body"><h3>${escapeHtml(item.name)}</h3>${description}${ingredientsTemplate(item)}<div class="product-options"><div class="product-quick-actions"><button class="favorite-button${isFavorite ? ' is-active' : ''}" type="button" aria-label="${isFavorite ? 'Remove' : 'Add'} ${escapeHtml(item.name)} ${isFavorite ? 'from' : 'to'} favorites" aria-pressed="${isFavorite}">${favoriteIcon}</button><button class="share-button" type="button" aria-label="Share ${escapeHtml(item.name)}">${shareIcon}</button></div></div><div class="product-footer"><strong>${escapeHtml(item.priceLabel)}</strong>${volumeTemplate(item)}${menuAddButton(item, 'add-button')}</div></div>
   </article>`;
 };
 
@@ -162,7 +186,7 @@ const desktopProductCardTemplate = (item) => {
   return `<article class="desktop-product-card product-card${item.category === 'gift-certificates' ? ' gift-card' : ''}${item.ingredients ? ' food-card' : ''}${item.ingredients ? ' food-card-no-options' : ''}" data-product-id="${escapeHtml(item.id)}" tabindex="0" aria-haspopup="dialog">
     <div class="desktop-product-image-wrap"><div class="product-image image-placeholder">${item.image ? `<img src="${escapeHtml(encodeURI(item.image))}" alt="${escapeHtml(item.name)}" loading="lazy" decoding="async">` : '<span>PRODUCT PHOTO</span>'}${badge}</div><button class="favorite-button${isFavorite ? ' is-active' : ''}" type="button" aria-label="${isFavorite ? 'Remove' : 'Add'} ${escapeHtml(item.name)} ${isFavorite ? 'from' : 'to'} favorites" aria-pressed="${isFavorite}">${favoriteIcon}</button></div>
     <div class="desktop-product-body"><h3>${escapeHtml(item.name)}</h3>${item.category === 'gift-certificates' ? `<strong class="gift-card-value">${escapeHtml(item.priceLabel)}</strong>` : ''}${description}${item.ingredients ? `<strong class="food-card-price">${escapeHtml(item.priceLabel)}</strong>` : ''}${ingredientsTemplate(item)}<div class="desktop-product-controls"><button class="share-button" type="button" aria-label="Share ${escapeHtml(item.name)}">${shareIcon}</button></div></div>
-    <div class="desktop-product-footer">${item.volume ? `<div class="drink-price-details"><strong class="desktop-product-price">${escapeHtml(item.priceLabel)}</strong>${volumeTemplate(item)}</div>` : `<strong class="desktop-product-price">${escapeHtml(item.priceLabel)}</strong>`}<button type="button" class="add-button">+ ADD</button></div>
+    <div class="desktop-product-footer">${item.volume ? `<div class="drink-price-details"><strong class="desktop-product-price">${escapeHtml(item.priceLabel)}</strong>${volumeTemplate(item)}</div>` : `<strong class="desktop-product-price">${escapeHtml(item.priceLabel)}</strong>`}${menuAddButton(item, 'add-button')}</div>
   </article>`;
 };
 
@@ -431,15 +455,6 @@ const updateActiveNavigation = () => {
 window.addEventListener('scroll', updateActiveNavigation, { passive: true });
 updateActiveNavigation();
 
-const cartStorageKey = 'nicolasSCart';
-const readCart = () => {
-  try {
-    const saved = JSON.parse(localStorage.getItem(cartStorageKey) || '{}');
-    if (!saved || typeof saved !== 'object' || Array.isArray(saved)) return {};
-    return Object.fromEntries(Object.entries(saved).filter(([id, quantity]) => menuItems.some(item => item.id === id) && Number.isSafeInteger(quantity) && quantity > 0));
-  } catch { return {}; }
-};
-let cart = readCart();
 const cartTotals = () => menuItems.reduce((totals, item) => {
   const quantity = cart[item.id] || 0;
   totals[item.category === 'gift-certificates' ? 'usd' : 'll'] += item.price * quantity;
@@ -456,6 +471,7 @@ let cartScroll = 0;
 let cartBodyStyle = null;
 const cartNumber = value => value.toLocaleString('en-US');
 const updateCartBadge = () => {
+  syncMenuAddButtons();
   const total = cartTotals().quantity;
   document.querySelectorAll('.cart-trigger').forEach(button => {
     button.setAttribute('aria-label', 'Open cart, ' + total + ' items');
@@ -637,7 +653,7 @@ productGrid.addEventListener('click', (event) => {
   if (!item) return;
   const addButton = event.target.closest('.add-button');
   if (addButton) {
-    addProduct(item, addButton);
+    if ((cart[item.id] || 0) < 1) changeCartQuantity(item.id, 1);
     return;
   }
   if (event.target.closest('.favorite-button')) {
@@ -654,7 +670,7 @@ desktopProductGrid.addEventListener('click', (event) => {
   if (!item) return;
   const addButton = event.target.closest('.add-button');
   if (addButton) {
-    addProduct(item, addButton);
+    if ((cart[item.id] || 0) < 1) changeCartQuantity(item.id, 1);
     return;
   }
   if (event.target.closest('.favorite-button')) {
