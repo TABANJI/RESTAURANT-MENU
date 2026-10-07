@@ -472,7 +472,7 @@ const renderCart = () => {
     <div class="cart-content">${totals.quantity ? menuItems.filter(item => cart[item.id]).map(item => `<article class="cart-row" data-cart-id="${escapeHtml(item.id)}">
       <img src="${escapeHtml(encodeURI(item.image))}" alt="${escapeHtml(item.name)}">
       <div class="cart-row-info"><h3>${escapeHtml(item.name)}</h3><strong>${escapeHtml(item.priceLabel)}</strong>
-        <div class="cart-row-actions"><div class="cart-quantity"><button type="button" data-cart-change="-1" aria-label="Decrease ${escapeHtml(item.name)} quantity">−</button><span aria-label="Quantity">${cart[item.id]}</span><button type="button" data-cart-change="1" aria-label="Increase ${escapeHtml(item.name)} quantity">+</button></div><button type="button" class="cart-remove" data-cart-remove aria-label="Remove ${escapeHtml(item.name)}">Remove</button></div>
+        <div class="cart-row-actions"><div class="cart-quantity"><button type="button" data-cart-change="-1" ${cart[item.id] <= 1 ? 'disabled' : ''} aria-label="Decrease ${escapeHtml(item.name)} quantity">−</button><span aria-label="Quantity">${cart[item.id]}</span><button type="button" data-cart-change="1" aria-label="Increase ${escapeHtml(item.name)} quantity">+</button></div><button type="button" class="cart-remove" data-cart-remove aria-label="Remove ${escapeHtml(item.name)}">Remove</button></div>
       </div></article>`).join('') : '<p class="cart-empty">Your cart is empty.</p>'}</div>
     <footer class="cart-footer"><div class="cart-total"><span>Subtotal</span><strong>${cartNumber(totals.ll)} LL</strong></div>${totals.usd ? `<div class="cart-total"><span>Gift cards (USD)</span><strong>${cartNumber(totals.usd)}</strong></div>` : ''}<button type="button" class="cart-checkout" data-cart-checkout ${totals.quantity ? '' : 'disabled'}>CHECKOUT</button></footer>`;
 };
@@ -484,7 +484,7 @@ const commitCart = () => {
 const changeCartQuantity = (id, change) => {
   if (!menuItems.some(item => item.id === id)) return;
   const quantity = (cart[id] || 0) + change;
-  if (!Number.isSafeInteger(quantity)) return;
+  if (!Number.isSafeInteger(quantity) || quantity < 1) return;
   if (quantity > 0) cart[id] = quantity;
   else delete cart[id];
   commitCart();
@@ -499,6 +499,29 @@ const buildOrder = (draft) => ({
   notes: draft.notes.trim(), paymentMethod: 'cash', items: checkoutItems(),
   subtotal: { LL: cartTotals().ll, USD: cartTotals().usd }, timestamp: new Date().toISOString()
 });
+const RESTAURANT_WHATSAPP = "96171000000";
+const formatWhatsAppOrder = (order) => {
+  const lines = [
+    '🟡 NEW ORDER — Nicolas.S', '',
+    'Customer: ' + order.customer,
+    'Phone: ' + order.phone,
+    'Order type: ' + (order.orderType === 'delivery' ? 'Delivery' : 'Pickup'),
+    '', 'Items:',
+    ...order.items.map(item => item.quantity + '× ' + item.name + ' — ' + (item.currency === 'USD' ? '$' + cartNumber(item.total) : cartNumber(item.total) + ' LL')),
+    '', 'Subtotal: ' + cartNumber(order.subtotal.LL) + ' LL'
+  ];
+  if (order.subtotal.USD) lines.push('Gift cards total (USD): $' + cartNumber(order.subtotal.USD));
+  lines.push('Payment: Cash');
+  if (order.orderType === 'delivery' && order.address) {
+    lines.push('', 'Address: ' + order.address.street);
+    if (order.address.building) lines.push('Building / Floor / Apartment: ' + order.address.building);
+    if (order.address.deliveryNotes) lines.push('Delivery notes: ' + order.address.deliveryNotes);
+  }
+  if (order.notes) lines.push('', 'Order notes: ' + order.notes);
+  return lines.join('\n');
+};
+const orderWhatsAppUrl = order => 'https://wa.me/' + RESTAURANT_WHATSAPP + '?text=' + encodeURIComponent(formatWhatsAppOrder(order));
+
 const renderCheckout = () => {
   if (!cartTotals().quantity) return renderCart();
   cartDialog.classList.add('is-checkout');
@@ -549,8 +572,8 @@ cartDialog.addEventListener('submit', event => {
   if (firstInvalid) { pendingOrder = null; firstInvalid.focus(); return; }
   if (!cartTotals().quantity) { pendingOrder = null; cartDialog.querySelector('.checkout-status').textContent = 'Your cart is empty.'; return; }
   pendingOrder = buildOrder(checkoutDraft);
-  cartDialog.querySelector('.checkout-status').textContent = 'Order ready to submit';
-  cartDialog.querySelector('.checkout-status').scrollIntoView({ block: 'nearest' });
+  cartDialog.querySelector('.checkout-status').textContent = 'Continue in WhatsApp and tap Send to submit your order. Your cart is saved.';
+  window.location.assign(orderWhatsAppUrl(pendingOrder));
 });
 
 const closeCart = () => {
@@ -577,7 +600,7 @@ cartDialog.addEventListener('click', event => {
     return;
   }
   const button = event.target.closest('button');
-  if (!button) return;
+  if (!button || button.disabled) return;
   if (button.hasAttribute('data-cart-close')) return closeCart();
   if (button.hasAttribute('data-cart-back')) { renderCart(); cartDialog.querySelector('[data-cart-checkout]').focus(); return; }
   if (button.hasAttribute('data-cart-checkout')) {
@@ -592,7 +615,7 @@ cartDialog.addEventListener('click', event => {
   else if (button.hasAttribute('data-cart-change')) changeCartQuantity(id, Number(button.dataset.cartChange));
   const nextRow = [...cartDialog.querySelectorAll('[data-cart-id]')].find(element => element.dataset.cartId === id);
   const nextButton = nextRow?.querySelector(button.hasAttribute('data-cart-remove') ? '[data-cart-remove]' : '[data-cart-change="' + button.dataset.cartChange + '"]');
-  (nextButton || cartDialog.querySelector('[data-cart-close]')).focus();
+  (nextButton && !nextButton.disabled ? nextButton : nextRow?.querySelector('[data-cart-change="1"]') || cartDialog.querySelector('[data-cart-close]')).focus();
 });
 window.addEventListener('storage', event => { if (event.key === cartStorageKey || event.key === null) { cart = readCart(); updateCartBadge(); if (cartDialog.open) renderCart(); } });
 updateCartBadge();
