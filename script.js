@@ -431,8 +431,109 @@ const updateActiveNavigation = () => {
 window.addEventListener('scroll', updateActiveNavigation, { passive: true });
 updateActiveNavigation();
 
+const cartStorageKey = 'nicolasSCart';
+const readCart = () => {
+  try {
+    const saved = JSON.parse(localStorage.getItem(cartStorageKey) || '{}');
+    if (!saved || typeof saved !== 'object' || Array.isArray(saved)) return {};
+    return Object.fromEntries(Object.entries(saved).filter(([id, quantity]) => menuItems.some(item => item.id === id) && Number.isSafeInteger(quantity) && quantity > 0));
+  } catch { return {}; }
+};
+let cart = readCart();
+const cartTotals = () => menuItems.reduce((totals, item) => {
+  const quantity = cart[item.id] || 0;
+  totals[item.category === 'gift-certificates' ? 'usd' : 'll'] += item.price * quantity;
+  totals.quantity += quantity;
+  return totals;
+}, { ll: 0, usd: 0, quantity: 0 });
+const cartDialog = document.createElement('dialog');
+cartDialog.className = 'cart-dialog';
+cartDialog.setAttribute('aria-label', 'Shopping cart');
+cartDialog.setAttribute('aria-modal', 'true');
+document.body.append(cartDialog);
+let cartOrigin = null;
+let cartScroll = 0;
+let cartBodyStyle = null;
+const cartNumber = value => value.toLocaleString('en-US');
+const updateCartBadge = () => {
+  const total = cartTotals().quantity;
+  document.querySelectorAll('.cart-trigger').forEach(button => {
+    button.setAttribute('aria-label', 'Open cart, ' + total + ' items');
+    const badge = button.querySelector('.cart-count');
+    badge.textContent = total;
+    badge.hidden = total === 0;
+  });
+};
+const renderCart = () => {
+  const totals = cartTotals();
+  cartDialog.innerHTML = `<header class="cart-heading"><h2>Your cart</h2><button type="button" data-cart-close aria-label="Close cart">×</button></header>
+    <div class="cart-content">${totals.quantity ? menuItems.filter(item => cart[item.id]).map(item => `<article class="cart-row" data-cart-id="${escapeHtml(item.id)}">
+      <img src="${escapeHtml(encodeURI(item.image))}" alt="${escapeHtml(item.name)}">
+      <div class="cart-row-info"><h3>${escapeHtml(item.name)}</h3><strong>${escapeHtml(item.priceLabel)}</strong>
+        <div class="cart-row-actions"><div class="cart-quantity"><button type="button" data-cart-change="-1" aria-label="Decrease ${escapeHtml(item.name)} quantity">−</button><span aria-label="Quantity">${cart[item.id]}</span><button type="button" data-cart-change="1" aria-label="Increase ${escapeHtml(item.name)} quantity">+</button></div><button type="button" class="cart-remove" data-cart-remove aria-label="Remove ${escapeHtml(item.name)}">Remove</button></div>
+      </div></article>`).join('') : '<p class="cart-empty">Your cart is empty.</p>'}</div>
+    <footer class="cart-footer"><div class="cart-total"><span>Subtotal</span><strong>${cartNumber(totals.ll)} LL</strong></div>${totals.usd ? `<div class="cart-total"><span>Gift cards (USD)</span><strong>${cartNumber(totals.usd)}</strong></div>` : ''}<button type="button" class="cart-checkout" data-cart-checkout ${totals.quantity ? '' : 'disabled'}>CHECKOUT</button></footer>`;
+};
+const commitCart = () => {
+  try { localStorage.setItem(cartStorageKey, JSON.stringify(cart)); } catch { /* Keep the current cart usable if storage is unavailable. */ }
+  updateCartBadge();
+  if (cartDialog.open) renderCart();
+};
+const changeCartQuantity = (id, change) => {
+  if (!menuItems.some(item => item.id === id)) return;
+  const quantity = (cart[id] || 0) + change;
+  if (!Number.isSafeInteger(quantity)) return;
+  if (quantity > 0) cart[id] = quantity;
+  else delete cart[id];
+  commitCart();
+};
+const closeCart = () => {
+  cartDialog.close();
+  if (cartBodyStyle === null) document.body.removeAttribute('style');
+  else document.body.setAttribute('style', cartBodyStyle);
+  window.scrollTo({ top: cartScroll, behavior: 'instant' });
+  cartOrigin?.focus({ preventScroll: true });
+};
+document.querySelectorAll('.cart-trigger').forEach(button => button.addEventListener('click', () => {
+  cartOrigin = button;
+  cartScroll = window.scrollY;
+  cartBodyStyle = document.body.getAttribute('style');
+  renderCart();
+  Object.assign(document.body.style, { position: 'fixed', top: '-' + cartScroll + 'px', width: '100%' });
+  cartDialog.showModal();
+  cartDialog.querySelector('[data-cart-close]').focus();
+}));
+cartDialog.addEventListener('cancel', event => { event.preventDefault(); closeCart(); });
+cartDialog.addEventListener('click', event => {
+  if (event.target === cartDialog) {
+    const rect = cartDialog.getBoundingClientRect();
+    if (event.clientX < rect.left || event.clientX > rect.right || event.clientY < rect.top || event.clientY > rect.bottom) closeCart();
+    return;
+  }
+  const button = event.target.closest('button');
+  if (!button) return;
+  if (button.hasAttribute('data-cart-close')) return closeCart();
+  if (button.hasAttribute('data-cart-back')) { renderCart(); cartDialog.querySelector('[data-cart-checkout]').focus(); return; }
+  if (button.hasAttribute('data-cart-checkout')) {
+    cartDialog.innerHTML = '<header class="cart-heading"><h2>Checkout</h2><button type="button" data-cart-close aria-label="Close checkout">×</button></header><div class="cart-content cart-checkout-message"><h3>Checkout is coming soon</h3><p>Your cart is saved. No order has been placed.</p><button type="button" data-cart-back>Back to cart</button></div>';
+    cartDialog.querySelector('[data-cart-back]').focus();
+    return;
+  }
+  const row = button.closest('[data-cart-id]');
+  if (!row) return;
+  const id = row.dataset.cartId;
+  if (button.hasAttribute('data-cart-remove')) { delete cart[id]; commitCart(); }
+  else if (button.hasAttribute('data-cart-change')) changeCartQuantity(id, Number(button.dataset.cartChange));
+  const nextRow = [...cartDialog.querySelectorAll('[data-cart-id]')].find(element => element.dataset.cartId === id);
+  const nextButton = nextRow?.querySelector(button.hasAttribute('data-cart-remove') ? '[data-cart-remove]' : '[data-cart-change="' + button.dataset.cartChange + '"]');
+  (nextButton || cartDialog.querySelector('[data-cart-close]')).focus();
+});
+window.addEventListener('storage', event => { if (event.key === cartStorageKey || event.key === null) { cart = readCart(); updateCartBadge(); if (cartDialog.open) renderCart(); } });
+updateCartBadge();
+
 const addProduct = (item, button) => {
   if (button.classList.contains('added')) return;
+  changeCartQuantity(item.id, 1);
   const label = button.firstChild;
   const original = label.textContent;
   label.textContent = 'Added';
