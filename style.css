@@ -826,3 +826,13 @@ h2 em, h1 em { color: var(--red); font-style: normal; }
 @media (max-width: 768px) { .cart-dialog.is-checkout { inset: auto 0 0; margin: 0; width: 100%; height: 94dvh; max-height: 94dvh; border-radius: 20px 20px 0 0; } }
 
 .cart-quantity button:disabled { opacity: .35; cursor: not-allowed; }
+
+/* Targeted checkout icon and header search. */
+.cart-heading .checkout-back { display: grid; place-items: center; padding: 0; }
+.checkout-back svg { display: block; width: 24px; height: 24px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.header-menu-search { display: flex; align-items: center; gap: 8px; padding: 10px 18px; border-top: 1px solid var(--line); background: #fff; }
+.header-menu-search[hidden] { display: none; }
+.header-menu-search input { flex: 1; min-width: 0; height: 42px; padding: 0 12px; border: 1px solid var(--line); border-radius: 8px; background: #fff; color: var(--dark); font: inherit; font-size: 16px; }
+.header-menu-search button { width: 42px; height: 42px; padding: 0; border: 0; border-radius: 8px; background: transparent; color: var(--dark); font-size: 26px; cursor: pointer; }
+.header-menu-search input:focus-visible, .header-menu-search button:focus-visible { outline: 2px solid var(--yellow); outline-offset: 2px; }
+.menu-search-empty { margin: 0; padding: 24px 0; color: #66635c; font-size: 14px; }

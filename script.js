@@ -113,6 +113,8 @@ let activeMainSection = 'mini-bites';
 let activeCategory = 'mana2eesh';
 let activeFilter = 'mana2eesh';
 let quickView = 'all';
+let mobileSearchTerm = '';
+const matchesMenuSearch = (item, query) => [item.name, item.ingredients, item.description].some(value => String(value || '').toLowerCase().includes(query));
 let scrollSpyGroups = [];
 let activeScrollGroupIndex = 0;
 let scrollSpyTicking = false;
@@ -290,6 +292,12 @@ const scrollToMenuSection = (target) => {
 window.addEventListener('scroll', queueScrollSpy, { passive: true });
 
 const renderProducts = () => {
+  if (window.innerWidth <= 768 && mobileSearchTerm) {
+    const items = menuItems.filter(item => matchesMenuSearch(item, mobileSearchTerm) && (quickView !== 'popular' || item.popular) && (quickView !== 'favorites' || favorites.has(item.id)));
+    productGrid.innerHTML = items.length ? items.map(productCardTemplate).join('') : '<p class="menu-search-empty" role="status">No items found</p>';
+    startScrollSpy();
+    return;
+  }
   if (window.innerWidth > 768) {
     const items = itemsForCategory(activeCategory);
     productGrid.innerHTML = items.map(productCardTemplate).join('');
@@ -329,7 +337,7 @@ const desktopSections = [
 
 const desktopItemsForSection = (section) => {
   if (!section.category) return [];
-  return menuItems.filter((item) => item.category === section.category && (!desktopPopularOnly || item.popular) && (!desktopFavoritesOnly || favorites.has(item.id)) && (!desktopSearchTerm || item.name.toLowerCase().includes(desktopSearchTerm)));
+  return menuItems.filter((item) => item.category === section.category && (!desktopPopularOnly || item.popular) && (!desktopFavoritesOnly || favorites.has(item.id)) && (!desktopSearchTerm || matchesMenuSearch(item, desktopSearchTerm)));
 };
 
 const setActiveDesktopSection = (sectionId) => {
@@ -394,6 +402,11 @@ const startDesktopScrollSpy = () => {
 
 const renderDesktopProducts = () => {
   if (window.innerWidth <= 768) return;
+  if (desktopSearchTerm && !desktopSections.some(section => desktopItemsForSection(section).length)) {
+    desktopProductGrid.innerHTML = '<p class="menu-search-empty" role="status">No items found</p>';
+    startDesktopScrollSpy();
+    return;
+  }
   desktopProductGrid.innerHTML = desktopSections.map((section) => {
     const items = desktopItemsForSection(section);
     const content = items.length ? items.map(desktopProductCardTemplate).join('') : `<p class="desktop-empty-section">${section.category ? 'No matching items.' : 'No verified menu items are available for this section yet.'}</p>`;
@@ -543,7 +556,7 @@ const renderCheckout = () => {
   cartDialog.classList.add('is-checkout');
   cartDialog.setAttribute('aria-label', 'Checkout');
   const totals = cartTotals();
-  cartDialog.innerHTML = `<header class="cart-heading"><button type="button" data-cart-back aria-label="Back to cart">←</button><h2>Checkout</h2><button type="button" data-cart-back aria-label="Back to cart">×</button></header>
+  cartDialog.innerHTML = `<header class="cart-heading"><button type="button" data-cart-back aria-label="Back to cart" class="checkout-back"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19 12H5m7-7-7 7 7 7"/></svg></button><h2>Checkout</h2><button type="button" data-cart-back aria-label="Back to cart">×</button></header>
   <form id="checkout-form" class="cart-content checkout-content" novalidate>
     <fieldset class="checkout-type"><legend class="checkout-legend">Order type</legend><label><input type="radio" name="orderType" value="delivery" ${checkoutDraft.orderType === 'delivery' ? 'checked' : ''}>Delivery</label><label><input type="radio" name="orderType" value="pickup" ${checkoutDraft.orderType === 'pickup' ? 'checked' : ''}>Pickup</label></fieldset>
     ${checkoutField('customer', 'Full name', true)}${checkoutField('phone', 'Phone number', true, 'tel')}
@@ -964,3 +977,39 @@ document.addEventListener('keydown', (event) => {
   const item = menuItems.find(product => product.id === event.target.dataset.productId);
   if (item) openProductDetail(item, event.target);
 });
+
+// Header search reuses the existing product-card renderers and cart state.
+const headerSearchButton = document.querySelector('.search-button');
+const headerSearch = document.createElement('div');
+headerSearch.className = 'header-menu-search';
+headerSearch.hidden = true;
+headerSearch.innerHTML = '<input type="search" placeholder="Search menu" aria-label="Search menu"><button type="button" aria-label="Close search">×</button>';
+document.querySelector('.site-header').append(headerSearch);
+const headerSearchInput = headerSearch.querySelector('input');
+headerSearchButton.setAttribute('aria-expanded', 'false');
+let searchScroll = 0;
+const closeHeaderSearch = (restoreScroll = true) => {
+  const wasOpen = !headerSearch.hidden;
+  headerSearch.hidden = true;
+  headerSearchButton.setAttribute('aria-expanded', 'false');
+  headerSearchInput.value = '';
+  mobileSearchTerm = '';
+  renderProducts();
+  if (wasOpen && restoreScroll) { window.scrollTo({ top: searchScroll, behavior: 'instant' }); headerSearchButton.focus({ preventScroll: true }); }
+};
+headerSearchButton.addEventListener('click', () => {
+  if (!headerSearch.hidden) return closeHeaderSearch();
+  closeMenu();
+  searchScroll = window.scrollY;
+  headerSearch.hidden = false;
+  headerSearchButton.setAttribute('aria-expanded', 'true');
+  headerSearchInput.focus();
+});
+headerSearchInput.addEventListener('input', () => {
+  mobileSearchTerm = headerSearchInput.value.trim().toLowerCase();
+  renderProducts();
+  if (mobileSearchTerm) productGrid.scrollIntoView({ block: 'start' });
+});
+headerSearch.querySelector('button').addEventListener('click', () => closeHeaderSearch());
+headerSearchInput.addEventListener('keydown', event => { if (event.key === 'Escape') { event.preventDefault(); closeHeaderSearch(); } });
+[categoryRow, subcategoryRow, mobileMenu, menuToggle].forEach(element => element.addEventListener('click', () => { if (!headerSearch.hidden) closeHeaderSearch(false); }, true));
